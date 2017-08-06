@@ -71,7 +71,7 @@ inline void VertexArray::create()
 }
 
 
-void VertexArray::setIntAttribute(unsigned int index, DataType type, unsigned int offsetBytes, unsigned int strideBytes)
+inline void VertexArray::setIntAttribute(unsigned int index, DataType type, unsigned int offsetBytes, unsigned int strideBytes)
 {
 #ifdef IMP_DEBUG
 
@@ -88,7 +88,7 @@ void VertexArray::setIntAttribute(unsigned int index, DataType type, unsigned in
 }
 
 
-void VertexArray::setFloatAttribute(unsigned int index, DataType type, unsigned int offsetBytes, unsigned int strideBytes, bool normalize)
+inline void VertexArray::setFloatAttribute(unsigned int index, DataType type, unsigned int offsetBytes, unsigned int strideBytes, bool normalize)
 {
 #ifdef IMP_DEBUG
 

@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <chrono>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/matrix.hpp>
@@ -17,17 +19,24 @@
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
 #include "Utils.hpp"
+#include "SimpleModel.hpp"
 
 using namespace imp;
+namespace chrono = std::chrono;
 
 const int windowWidth = 800;
 const int windowHeight = 600;
+
+chrono::steady_clock::time_point lastDrawTime;
 
 SimpleCamera simpleCamera;
 
 VertexBuffer fullscreenQuadDataVBO;
 VertexBuffer fullscreenQuadIndexVBO;
 VertexArray fullscreenQuadVAO;
+
+SimpleModel simpleModel;
+
 ShaderProgram basicProgram;
 
 tinygltf::Model model;
@@ -101,17 +110,29 @@ void init()
 	if (!ret)
 		std::cout << "Failed to parse glTF\n";
 
+    simpleModel.create(model);
+
+    lastDrawTime = chrono::steady_clock::now();
+
 	glViewport(0, 0, windowWidth, windowHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void draw()
 {
+    chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
+    chrono::duration<float> timeSpan = chrono::duration_cast<chrono::duration<float>>(currentTime - lastDrawTime);
+    float tick = timeSpan.count();
+    if(tick < (1.0f / 60.0f))
+        return;
+    lastDrawTime = currentTime;
+
+
 	float width = static_cast<float>(windowWidth);
 	float height = static_cast<float>(windowHeight);
 
 	static float angle = 0.0f;
-	angle += 0.01f;
+    angle += tick;
 	glm::mat4 proj = glm::perspectiveFov(45.0f, width, height, 0.1f, 100.0f);
 	glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -10.0f));
 	model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));

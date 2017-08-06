@@ -8,7 +8,7 @@ QT -= core gui
 
 TARGET = imp
 TEMPLATE = lib
-
+CONFIG += c++14
 DEFINES += IMP_LIBRARY
 
 # The following define makes your compiler emit warnings if you use

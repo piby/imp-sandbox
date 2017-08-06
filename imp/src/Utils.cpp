@@ -6,7 +6,7 @@
 
 std::string imp::loadShader(const std::string& fileName)
 {
-	std::ifstream shaderFile(fileName);
+    std::ifstream shaderFile(fileName.c_str());
 	if (!shaderFile.is_open())
 	{
 		return std::string();

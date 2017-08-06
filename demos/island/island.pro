@@ -13,8 +13,10 @@ LIBS += \
  -lGL \
  -L$$PWD/../../build/imp/ -limp
 
-#HEADERS = \
+HEADERS = \
+ src/SimpleModel.hpp
 
 SOURCES = \
  src/main.cpp \
+ src/SimpleModel.cpp
 
