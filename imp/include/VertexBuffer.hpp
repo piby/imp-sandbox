@@ -63,7 +63,7 @@ public:
 
 
 	/// Replace all or part of data stored in buffer; this function is faster then maping
-	bool replaceData( int offsetInBytes, void *data, int dataSize );
+	bool replaceData( int offsetInBytes, unsigned int sizeInBytes, void *data );
 
 
 	/// Return number of allocated bytes

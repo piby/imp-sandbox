@@ -84,7 +84,7 @@ inline bool VertexBuffer::unmapBuffer() const
 }
 
 
-inline bool VertexBuffer::replaceData( int offsetInBytes, void *data, int dataSize )
+inline bool VertexBuffer::replaceData( int offsetInBytes, unsigned int sizeInBytes, void *data )
 {
 
 #ifdef IMP_DEBUG
@@ -95,7 +95,7 @@ inline bool VertexBuffer::replaceData( int offsetInBytes, void *data, int dataSi
 
 #endif
 
-	glBufferSubData( static_cast<unsigned int>(m_bufferType), offsetInBytes, dataSize, data );
+	glBufferSubData( static_cast<unsigned int>(m_bufferType), offsetInBytes, sizeInBytes, data );
 
 	if( glGetError() != GL_NO_ERROR )
 		return 0;

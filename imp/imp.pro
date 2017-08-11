@@ -33,6 +33,8 @@ HEADERS += \
  include/FrameBuffer.hpp \
  include/VertexBuffer.hpp \
  include/VertexBuffer.inl \
+ include/UniformBuffer.hpp \
+ include/UniformBuffer.inl \
  include/VertexArray.hpp \
  include/VertexArray.inl \
  include/SimpleCamera.hpp \
