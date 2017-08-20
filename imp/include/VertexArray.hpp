@@ -77,6 +77,10 @@ public:
 	void setFloatAttribute(unsigned int index, DataType type, unsigned int offsetBytes, unsigned int strideBytes, bool normalize = false);
 
 
+    /// Enable or disable attribute at specified index.
+    void setAttributeUsage(unsigned int index, bool enable);
+
+
 	/// Bind this array
 	void bind() const;
 

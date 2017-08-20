@@ -9,17 +9,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#define TINYGLTF_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#include "tiny_gltf.h"
-
 #include "SimpleCamera.hpp"
 #include "Shader.hpp"
 #include "ShaderProgram.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
 #include "Utils.hpp"
-#include "SimpleModel.hpp"
+#include "SimpleMesh.hpp"
+#include "GLTFLoader.hpp"
 
 using namespace imp;
 namespace chrono = std::chrono;
@@ -35,12 +32,9 @@ VertexBuffer fullscreenQuadDataVBO;
 VertexBuffer fullscreenQuadIndexVBO;
 VertexArray fullscreenQuadVAO;
 
-SimpleModel simpleModel;
+SimpleMesh simpleModel;
 
 ShaderProgram basicProgram;
-
-tinygltf::Model model;
-tinygltf::TinyGLTF loader;
 
 void init()
 {
@@ -80,12 +74,12 @@ void init()
         std::cout << log;
 	}
 
-    fullscreenQuadDataVBO.allocate(
+    fullscreenQuadDataVBO.create(
         VertexBuffer::Type::VERTEX_DATA,
         VertexBuffer::UsageFlag::SPECIFIED_ONCE,
         quadDataSize, quadData);
 
-    fullscreenQuadIndexVBO.allocate(
+    fullscreenQuadIndexVBO.create(
 		VertexBuffer::Type::INDEX_DATA,
 		VertexBuffer::UsageFlag::SPECIFIED_ONCE,
 		quadIndicesSize, quadIndices);
@@ -94,23 +88,17 @@ void init()
 	fullscreenQuadVAO.create();
 	fullscreenQuadVAO.bind();
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
     fullscreenQuadDataVBO.bind();
     fullscreenQuadVAO.setFloatAttribute(0, VertexArray::DataType::FLOAT_3_COMPONENTS, 0, 5*sf);
+    fullscreenQuadVAO.setAttributeUsage(0, true);
     fullscreenQuadVAO.setFloatAttribute(1, VertexArray::DataType::FLOAT_2_COMPONENTS, 3*sf, 5*sf);
+    fullscreenQuadVAO.setAttributeUsage(1, true);
     fullscreenQuadIndexVBO.bind();
 
 	fullscreenQuadVAO.unbind();
 
-	std::string loadError;
-	bool ret = loader.LoadASCIIFromFile(&model, &loadError, dataPath + "BoxTextured.gltf");
-	if (!loadError.empty())
-		std::cout << loadError;
-	if (!ret)
-		std::cout << "Failed to parse glTF\n";
-
-    simpleModel.create(model);
+    GLTFLoader gltfLoader;
+    gltfLoader.load(dataPath + "BoxTextured.gltf");
 
     lastDrawTime = chrono::steady_clock::now();
 

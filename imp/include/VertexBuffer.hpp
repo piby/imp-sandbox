@@ -43,7 +43,7 @@ public:
 
 	/// Create new data storage for currently bound buffer
 	/// object (any existing data will be deleted)
-	bool allocate( Type type, UsageFlag usageFlag, unsigned int sizeInBytes, const void* data );
+    bool create( Type type, UsageFlag usageFlag, unsigned int sizeInBytes, const void* data );
 
 
 	/// Bind this buffer

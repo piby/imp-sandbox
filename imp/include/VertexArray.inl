@@ -104,6 +104,19 @@ inline void VertexArray::setFloatAttribute(unsigned int index, DataType type, un
 }
 
 
+inline void VertexArray::setAttributeUsage(unsigned int index, bool enable)
+{
+    using AttribMethod = void (*)(GLuint);
+    AttribMethod method[] =
+    {
+        glDisableVertexAttribArray,
+        glEnableVertexAttribArray
+    };
+
+    method[static_cast<unsigned int>(enable)](index);
+}
+
+
 inline void VertexArray::bind() const
 {
 	glBindVertexArray( m_id );

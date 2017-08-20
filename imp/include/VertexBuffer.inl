@@ -12,7 +12,7 @@ inline VertexBuffer::~VertexBuffer()
 }
 
 
-inline bool VertexBuffer::allocate( VertexBuffer::Type type, VertexBuffer::UsageFlag usageFlag, unsigned int sizeInBytes, const void* data )
+inline bool VertexBuffer::create( VertexBuffer::Type type, VertexBuffer::UsageFlag usageFlag, unsigned int sizeInBytes, const void* data )
 {
 	if( !m_id ) 
 		glGenBuffers( 1, &m_id );

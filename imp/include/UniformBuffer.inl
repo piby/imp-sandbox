@@ -12,7 +12,7 @@ inline UniformBuffer::~UniformBuffer()
 }
 
 
-inline bool UniformBuffer<StructType>::allocate( UsageFlag usageFlag, unsigned int sizeInBytes, void *data )
+inline bool UniformBuffer::create( UniformBuffer::UsageFlag usageFlag, unsigned int sizeInBytes, void *data )
 {
 	if( !m_id ) 
 		glGenBuffers( 1, &m_id );
@@ -21,7 +21,7 @@ inline bool UniformBuffer<StructType>::allocate( UsageFlag usageFlag, unsigned i
 		return 0;
 
 	glBindBuffer( GL_UNIFORM_BUFFER, m_id );
-	glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeInBytes, data );
+    glBufferData( GL_UNIFORM_BUFFER, sizeInBytes, data, static_cast<unsigned int>(usageFlag) );
 
 	if( glGetError() != GL_NO_ERROR )
 		return 0;
@@ -67,6 +67,18 @@ inline bool UniformBuffer::replaceData( int offsetInBytes, unsigned int sizeInBy
 	if( glGetError() != GL_NO_ERROR )
 		return 0;
 	return 1;
+}
+
+
+void UniformBuffer::setBindingPoint( unsigned int bindingPoint )
+{
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    glBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, m_id );
 }
 
 

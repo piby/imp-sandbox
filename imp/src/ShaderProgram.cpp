@@ -161,19 +161,75 @@ void ShaderProgram::setUniformMatrix( int uLoc, UniformMatrixType type, float* v
 
 int ShaderProgram::getUniformLocation( const char* variableName )
 {
-	return glGetUniformLocation( m_id, variableName );
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    return glGetUniformLocation( m_id, variableName );
 }
 
 	
 void ShaderProgram::getUniform( int uLoc, float* buff )
 {
-	glGetUniformfv( m_id, uLoc, buff );
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    glGetUniformfv( m_id, uLoc, buff );
 }
 
 
 void ShaderProgram::getUniform( int uLoc, int* buff )
 {
-	glGetUniformiv( m_id, uLoc, buff );
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    glGetUniformiv( m_id, uLoc, buff );
+}
+
+
+int ShaderProgram::getUniformBlockIndex(const char* blockName) const
+{
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    return glGetUniformBlockIndex( m_id, blockName );
+}
+
+
+int ShaderProgram::getUniformBlockSize(int blockIndex) const
+{
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    int uniformBlockSize = 0;
+    glGetActiveUniformBlockiv( m_id, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
+    return uniformBlockSize;
+}
+
+
+void ShaderProgram::assignBindingPointToUniformBlock(int blockIndex, int bindingPoint)
+{
+#ifdef IMP_DEBUG
+
+    assert( m_id );
+
+#endif
+
+    glUniformBlockBinding( m_id, blockIndex, bindingPoint);
 }
 
 
