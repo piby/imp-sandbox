@@ -12,21 +12,19 @@ public:
 
     MeshBuilder() = default;
 
-    bool build(tinygltf::Primitive& primitive, tinygltf::Model& model);
+    const MeshData& build(tinygltf::Primitive& primitive, tinygltf::Model& model);
 
 protected:
 
-    int getComponentSize(int componentType) const;
+    int getComponentSize(std::int32_t componentType) const;
 
 private:
 
-    unsigned int m_indicesCount;
-    unsigned int m_vertexCount;
-
+    MeshData m_meshData;
 };
 
 
-bool MeshBuilder::build(tinygltf::Primitive& primitive, tinygltf::Model& model)
+const MeshData& MeshBuilder::build(tinygltf::Primitive& primitive, tinygltf::Model& model)
 {
     // attributes supported by builder
     const std::string Attributes[] =
@@ -37,29 +35,31 @@ bool MeshBuilder::build(tinygltf::Primitive& primitive, tinygltf::Model& model)
         "TEXCOORD_1",
         "TEXCOORD_2",
         "TEXCOORD_3",
+        //"JOINTS_0", // not supported yet
+        //"WEIGHTS_0" // not supported yet
     };
 
-    unsigned int accessorIndex = primitive.indices;
+    std::uint32_t accessorIndex = primitive.indices;
     auto accessor = model.accessors[accessorIndex];
     auto bufferView = model.bufferViews[accessor.bufferView];
     auto buffer =  model.buffers[bufferView.buffer];
 
     // get index data
-    m_indicesCount = accessor.count;
+    m_meshData.indicesCount = accessor.count;
     int componentSize = getComponentSize(accessor.componentType);
-    std::vector<unsigned char> indicesData(m_indicesCount * componentSize, 0);
-    for(unsigned int i = 0 ; i < m_indicesCount ; i++)
+    m_meshData.indicesData.assign(m_meshData.indicesCount * componentSize, 0);
+    for(std::uint32_t i = 0 ; i < m_meshData.indicesCount ; i++)
     {
         std::size_t srcIndex = accessor.byteOffset +
                                bufferView.byteOffset +
                                i*componentSize;
         std::size_t dstIndex = i*componentSize;
-//        for(int j = 0 ; j < componentSize ; j++)
-//            indicesData[++dstIndex] = buffer.data[++srcIndex];
+        for(int j = 0 ; j < componentSize ; j++)
+            m_meshData.indicesData[dstIndex+j] = buffer.data[srcIndex+j];
     }
 
     // check how much space is needed for attributes
-    unsigned int vertexStructureSize = 0;
+    std::uint32_t vertexStructureSize = 0;
     for( const auto& supportedAttribute : Attributes )
     {
         // check if this attribute was specified
@@ -71,14 +71,14 @@ bool MeshBuilder::build(tinygltf::Primitive& primitive, tinygltf::Model& model)
         accessorIndex = attribute->second;
         accessor = model.accessors[accessorIndex];
 
-        m_vertexCount = accessor.count;
+        m_meshData.vertexCount = accessor.count;
         vertexStructureSize += getComponentSize(accessor.componentType);
     }
 
     // prepare attributes data in correct order as an array of structures
-    auto attributesSize = vertexStructureSize * m_vertexCount;
+    auto attributesSize = vertexStructureSize * m_meshData.vertexCount;
     auto attributeOffset = 0;
-    std::vector<unsigned char> attributesData(attributesSize, 0);
+	m_meshData.attributesData.assign(attributesSize, 0);
     for( const auto& supportedAttribute : Attributes )
     {
         // check if this attribute was specified
@@ -93,25 +93,29 @@ bool MeshBuilder::build(tinygltf::Primitive& primitive, tinygltf::Model& model)
         buffer =  model.buffers[bufferView.buffer];
 
         componentSize = getComponentSize(accessor.componentType);
-        for(unsigned int i = 0 ; i < m_vertexCount ; i++)
+        for(std::uint32_t i = 0 ; i < m_meshData.vertexCount ; i++)
         {
             std::size_t srcIndex = accessor.byteOffset +
                                    bufferView.byteOffset +
                                    bufferView.byteStride +
                                    i * componentSize;
             std::size_t dstIndex = i * vertexStructureSize + attributeOffset;
-//            for(int j = 0 ; j < componentSize ; j++)
-//                attributesData[++dstIndex] = buffer.data[++srcIndex];
+            for(int j = 0 ; j < componentSize ; j++)
+                m_meshData.attributesData[dstIndex+j] = buffer.data[srcIndex+j];
         }
         attributeOffset += componentSize;
     }
 
-    return true;
+    // load primitive material
+    //auto material = model.materials[primitive.material];
+    // ...
+
+    return m_meshData;
 }
 
-int MeshBuilder::getComponentSize(int componentType) const
+int MeshBuilder::getComponentSize(std::int32_t componentType) const
 {
-    static std::map<int, int> componentStrides =
+    static std::map<std::int32_t, std::int32_t> componentStrides =
     {
         { TINYGLTF_COMPONENT_TYPE_BYTE, sizeof(char) },
         { TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, sizeof(unsigned char) },
@@ -125,7 +129,7 @@ int MeshBuilder::getComponentSize(int componentType) const
     return componentStrides[componentType];
 }
 
-bool GLTFLoader::load(const std::string& filename)
+bool GLTFLoader::load(const std::string& filename, MeshDataHandler handler)
 {
     tinygltf::Model model;
     tinygltf::TinyGLTF loader;
@@ -137,12 +141,13 @@ bool GLTFLoader::load(const std::string& filename)
         return false;
     }
 
+	MeshBuilder meshBuilder;
     for(auto& mesh : model.meshes)
     {
         for(auto& primitive : mesh.primitives)
         {
-            MeshBuilder meshBuilder;
-            meshBuilder.build(primitive, model);
+            const MeshData& meshData = meshBuilder.build(primitive, model);
+			handler(meshData);
             // ... get mesh data
             // ... create mesh
         }

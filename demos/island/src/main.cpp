@@ -15,7 +15,7 @@
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
 #include "Utils.hpp"
-#include "SimpleMesh.hpp"
+#include "StaticMesh.hpp"
 #include "GLTFLoader.hpp"
 
 using namespace imp;
@@ -32,7 +32,7 @@ VertexBuffer fullscreenQuadDataVBO;
 VertexBuffer fullscreenQuadIndexVBO;
 VertexArray fullscreenQuadVAO;
 
-SimpleMesh simpleModel;
+std::vector<StaticMesh> staticMeshes;
 
 ShaderProgram basicProgram;
 
@@ -97,8 +97,14 @@ void init()
 
 	fullscreenQuadVAO.unbind();
 
+	auto meshDataHandler = [&staticMeshes](const MeshData& meshData) {
+		//StaticMesh mesh;
+		// ...
+		//staticMeshes.push_back(mesh);
+	};
+
     GLTFLoader gltfLoader;
-    gltfLoader.load(dataPath + "BoxTextured.gltf");
+    gltfLoader.load(dataPath + "BoxTextured.gltf", meshDataHandler);
 
     lastDrawTime = chrono::steady_clock::now();
 

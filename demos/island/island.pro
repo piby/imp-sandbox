@@ -14,11 +14,11 @@ LIBS += \
  -L$$PWD/../../build/imp/ -limp
 
 HEADERS = \
-    src/SimpleMesh.hpp \
-    src/GLTFLoader.hpp
+    src/GLTFLoader.hpp \
+    src/StaticMesh.hpp
 
 SOURCES = \
     src/main.cpp \
-    src/SimpleMesh.cpp \
-    src/GLTFLoader.cpp
+    src/GLTFLoader.cpp \
+    src/StaticMesh.cpp
 

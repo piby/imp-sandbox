@@ -1,5 +1,5 @@
-#ifndef SIMPLE_MESH
-#define SIMPLE_MESH
+#ifndef STATIC_MESH
+#define STATIC_MESH
 
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@
 #include "VertexArray.hpp"
 
 
-class SimpleMesh
+class StaticMesh
 {
 
 public:
@@ -26,25 +26,25 @@ public:
     struct Data
     {
         /// Number of vertex definitions in attributes vector
-        unsigned int verexCount;
+        std::uint32_t verexCount;
 
         /// Number of indices defined in indices array
-        unsigned int indicesCount;
+        std::uint32_t indicesCount;
 
         /// Components used in attributes
         std::vector<Components> components;
 
         /// Vertex attributes in form of array of structures
-        std::vector<unsigned char> attributes;
+        std::vector<std::uint8_t> attributes;
 
         /// Vertex indices
-        std::vector<unsigned char> indices;
+        std::vector<std::uint8_t> indices;
     };
 
 public:
 
     /// Construct
-    SimpleMesh();
+    StaticMesh();
 
     /// Upload mesh data to GPU
     void create( const Data& data );
@@ -54,7 +54,7 @@ public:
 
 protected:
 
-    unsigned int m_indicesCount;
+    std::uint32_t m_indicesCount;
 
     imp::VertexBuffer m_indicesVBO;
     imp::VertexBuffer m_attributesVBO;

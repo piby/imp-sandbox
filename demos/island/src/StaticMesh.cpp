@@ -1,4 +1,4 @@
-#include "SimpleMesh.hpp"
+#include "StaticMesh.hpp"
 
 using namespace imp;
 
@@ -8,25 +8,25 @@ struct AttributeComponentData
     VertexArray::DataType vaoDataType;
 };
 
-static std::map<SimpleMesh::Components, AttributeComponentData > ComponentData =
+static std::map<StaticMesh::Components, AttributeComponentData > ComponentData =
 {
-    { SimpleMesh::Components::POSITION,    { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
-    { SimpleMesh::Components::NORMAL,      { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
-    { SimpleMesh::Components::TEX_COORD_0, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { SimpleMesh::Components::TEX_COORD_1, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { SimpleMesh::Components::TEX_COORD_2, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { SimpleMesh::Components::TEX_COORD_3, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { StaticMesh::Components::POSITION,    { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
+    { StaticMesh::Components::NORMAL,      { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
+    { StaticMesh::Components::TEX_COORD_0, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { StaticMesh::Components::TEX_COORD_1, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { StaticMesh::Components::TEX_COORD_2, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { StaticMesh::Components::TEX_COORD_3, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
     //{ SimpleMesh::Components::ARRAYTEXCOORD_0, ...
 };
 
 
-SimpleMesh::SimpleMesh()
+StaticMesh::StaticMesh()
     : m_indicesCount(0)
 {
 }
 
 
-void SimpleMesh::create( const Data& data )
+void StaticMesh::create( const Data& data )
 {
     m_indicesCount = data.indicesCount;
 
@@ -75,7 +75,7 @@ void SimpleMesh::create( const Data& data )
 }
 
 
-void SimpleMesh::draw()
+void StaticMesh::draw()
 {
     assert( m_indicesCount != 0 );
 
