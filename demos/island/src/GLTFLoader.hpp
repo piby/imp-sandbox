@@ -1,23 +1,16 @@
 #ifndef GLTF_LOADER
 #define GLTF_LOADER
 
+#include "MeshData.hpp"
 #include <functional>
 #include <string>
 #include <vector>
-
-struct MeshData
-{
-	std::uint32_t vertexCount;
-	std::uint32_t indicesCount;
-	std::vector<std::uint8_t> indicesData;
-	std::vector<std::uint8_t> attributesData;
-};
 
 class GLTFLoader
 {
 public:
 
-	typedef std::function<void (const MeshData&)> MeshDataHandler;
+	typedef std::function<void (MeshData&)> MeshDataHandler;
 
 public:
 

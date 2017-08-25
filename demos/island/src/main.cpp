@@ -97,10 +97,9 @@ void init()
 
 	fullscreenQuadVAO.unbind();
 
-	auto meshDataHandler = [&staticMeshes](const MeshData& meshData) {
-		//StaticMesh mesh;
-		// ...
-		//staticMeshes.push_back(mesh);
+	auto meshDataHandler = [&staticMeshes](MeshData& meshData) {
+		staticMeshes.push_back(StaticMesh());
+		staticMeshes.back().create(meshData);
 	};
 
     GLTFLoader gltfLoader;
