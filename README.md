@@ -2,5 +2,5 @@ OpenGL sandbox
 
 ## Requirements:
 * glfw
-* glew
-* tinygltf
+* glew ()
+* tinygltf (https://github.com/syoyo/tinygltf)

@@ -8,14 +8,15 @@ struct AttributeComponentData
     VertexArray::DataType vaoDataType;
 };
 
-static std::map<MeshData::Components, AttributeComponentData > ComponentData =
+static std::map<MeshData::Attribute, AttributeComponentData > ComponentData =
 {
-    { MeshData::Components::POSITION,    { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
-    { MeshData::Components::NORMAL,      { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
-    { MeshData::Components::TEX_COORD_0, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { MeshData::Components::TEX_COORD_1, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { MeshData::Components::TEX_COORD_2, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
-    { MeshData::Components::TEX_COORD_3, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { MeshData::Attribute::POSITION,    { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
+	{ MeshData::Attribute::NORMAL,      { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
+	{ MeshData::Attribute::TANGENT,     { 3 * sizeof( float ), VertexArray::DataType::FLOAT_3_COMPONENTS }},
+    { MeshData::Attribute::TEX_COORD_0, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { MeshData::Attribute::TEX_COORD_1, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { MeshData::Attribute::TEX_COORD_2, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
+    { MeshData::Attribute::TEX_COORD_3, { 2 * sizeof( float ), VertexArray::DataType::FLOAT_2_COMPONENTS }},
     //{ MeshData::Components::ARRAYTEXCOORD_0, ...
 };
 
@@ -30,10 +31,11 @@ void StaticMesh::create( const MeshData& data )
 {
     m_indicesCount = data.indicesCount;
     m_indicesType = data.indicesType;
+    m_drawMode = data.drawMode;
 
     // calculate size of data for single vertex
     unsigned int striteBytes = 0;
-    for( auto component : data.components )
+    for( auto component : data.attributes )
     {
         striteBytes += ComponentData[component].sizeInBytes;
     }
@@ -47,7 +49,7 @@ void StaticMesh::create( const MeshData& data )
     // create VBO with vertex attributes
     m_attributesVBO.create(
         VertexBuffer::Type::VERTEX_DATA,
-		VertexBuffer::UsageFlag::SPECIFIED_ONCE,
+        VertexBuffer::UsageFlag::SPECIFIED_ONCE,
         data.attributesData.size(), data.attributesData.data());
 
     // create VAO
@@ -58,7 +60,7 @@ void StaticMesh::create( const MeshData& data )
     // specify vertex attributes
     unsigned int attributeIndex = 0;
     unsigned int offsetBytes = 0;
-    for( auto component : data.components )
+    for( auto component : data.attributes )
     {
         m_vao.setFloatAttribute(
             attributeIndex,
@@ -76,13 +78,13 @@ void StaticMesh::create( const MeshData& data )
 }
 
 
-void StaticMesh::draw()
+void StaticMesh::draw() const
 {
     assert( m_indicesCount != 0 );
 
     m_vao.bind();
 
-    glDrawElements(GL_TRIANGLE_STRIP, m_indicesCount, m_indicesType, 0);
+    glDrawElements(m_drawMode, m_indicesCount, m_indicesType, 0);
 
     m_vao.unbind();
 }

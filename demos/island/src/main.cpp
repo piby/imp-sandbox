@@ -11,6 +11,7 @@
 
 #include "SimpleCamera.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 #include "ShaderProgram.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
@@ -33,6 +34,7 @@ VertexBuffer fullscreenQuadIndexVBO;
 VertexArray fullscreenQuadVAO;
 
 std::vector<StaticMesh> staticMeshes;
+Texture staticMeshTexture;
 
 ShaderProgram basicProgram;
 
@@ -100,6 +102,12 @@ void init()
 	auto meshDataHandler = [&staticMeshes](MeshData& meshData) {
 		staticMeshes.push_back(StaticMesh());
 		staticMeshes.back().create(meshData);
+		for(const auto& texture : meshData.textures)
+		{
+			auto& td = texture.second;
+			staticMeshTexture.create(Texture::TexelFormat::RGBA_8_8_8_8_UNSIGNED_BYTE, td.width, td.height, td.imageData);
+			break; // TEMP: asume that there is only one model and handle only one texture for now
+		}
 	};
 
     GLTFLoader gltfLoader;
@@ -143,13 +151,18 @@ void draw()
 
 	assert(glGetError() == GL_NO_ERROR);
 
+	staticMeshTexture.bind();
+	for( const auto& mesh : staticMeshes )
+		mesh.draw();
+
+/*
 	fullscreenQuadVAO.bind();
 
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
 
 	fullscreenQuadVAO.unbind();
 	basicProgram.unbind();
-
+*/
 	assert(glGetError() == GL_NO_ERROR);
 
 	// render cune map:

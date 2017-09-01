@@ -21,12 +21,13 @@ public:
     void create( const MeshData& data );
 
     /// Draw mesh
-    void draw();
+    void draw() const;
 
 protected:
 
     std::uint32_t m_indicesCount;
     GLenum m_indicesType;
+    GLenum m_drawMode;
 
     imp::VertexBuffer m_indicesVBO;
     imp::VertexBuffer m_attributesVBO;
