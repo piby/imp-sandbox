@@ -9,7 +9,7 @@ namespace imp
 // Example:
 //  layout (std140, binding = 2) uniform Data { float x; } myData;
 //  void main() {
-//    gl_Position = vec4(myData.x, 0.0, 0.0, 1.0);
+//	gl_Position = vec4(myData.x, 0.0, 0.0, 1.0);
 //  }
 
 class UniformBuffer
@@ -36,7 +36,7 @@ public:
 
 	/// Create new data storage for currently bound buffer
 	/// object (any existing data will be deleted)
-    bool create( UsageFlag usageFlag, unsigned int sizeInBytes, void *data );
+	bool create( UsageFlag usageFlag, unsigned int sizeInBytes, void *data );
 
 
 	/// Bind this buffer
@@ -49,10 +49,10 @@ public:
 	/// Replace all or part of data stored in buffer; this function is faster then maping
 	bool replaceData( int offsetInBytes, unsigned int sizeInBytes, void *data );
 
-    /// Attach the buffer to selected binding point
-    /// Binding point is used by ShaderProgram to conect uniform block defined in shader
-    /// with UniformBuffer object
-    void setBindingPoint( unsigned int bindingPoint );
+	/// Attach the buffer to selected binding point
+	/// Binding point is used by ShaderProgram to conect uniform block defined in shader
+	/// with UniformBuffer object
+	void setBindingPoint( unsigned int bindingPoint );
 
 	/// Return opengl id of buffer
 	unsigned int getId() const;

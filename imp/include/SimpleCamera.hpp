@@ -26,10 +26,10 @@ public:
 
 	// move camera along world axes
 	void Move( float xAxisAdd, float yAxisAdd, float zAxisAdd );		
-	
+
 	// move camera along it's own axes
 	void MoveRelative( float rightAdd, float upAdd, float dirAdd );		
-	 
+
 	// rotate camera along world axes, angles are in radians
 	void Rotate( float xAngleRad, float yAngleRad, float zAngleRad );
 	

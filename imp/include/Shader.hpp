@@ -12,34 +12,34 @@ class Shader
 
 public:
 
-    enum class Type
+	enum class Type
 	{
-        VERTEX_SHADER	= GL_VERTEX_SHADER,
-        FRAGMENT_SHADER	= GL_FRAGMENT_SHADER
+		VERTEX_SHADER	= GL_VERTEX_SHADER,
+		FRAGMENT_SHADER	= GL_FRAGMENT_SHADER
 	};
 
 
 public:
 
-    /// Constructor.
+	/// Constructor.
 	Shader();
 
-    /// Destructor, deletes shader or flags it for deletion
-    /// until it is no longer attached to any program.
+	/// Destructor, deletes shader or flags it for deletion
+	/// until it is no longer attached to any program.
 	~Shader();
 
 
-    /// Creates and compiles shader, returns value
-    /// less than zero in case of an error.
-    int create( Type type, const std::string& sourceCode );
+	/// Creates and compiles shader, returns value
+	/// less than zero in case of an error.
+	int create( Type type, const std::string& sourceCode );
 
-    /// Retrieves compilation log.
-    void getCompilationLog(std::string& result) const;
+	/// Retrieves compilation log.
+	void getCompilationLog(std::string& result) const;
 
-    /// Returns shader type.
+	/// Returns shader type.
 	Type getType() const;
 
-    /// Returns shader id.
+	/// Returns shader id.
 	unsigned int getId() const;
 
 

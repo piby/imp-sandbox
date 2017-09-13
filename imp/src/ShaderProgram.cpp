@@ -46,7 +46,7 @@ bool ShaderProgram::attach( const Shader& shader )
 	if( glGetError() != GL_NO_ERROR )
 		return 0;
 	return 1;
-}	
+}
 
 
 bool ShaderProgram::detach( const Shader& shader )
@@ -72,7 +72,7 @@ bool ShaderProgram::link() const
 	if( glGetError() != GL_NO_ERROR )
 		return 0;
 
-	// check if linking was successful	
+	// check if linking was successful
 	int status;
 	glGetProgramiv( m_id, GL_LINK_STATUS, &status );
 	if( status )
@@ -83,79 +83,88 @@ bool ShaderProgram::link() const
 
 void ShaderProgram::bind() const
 {
-    glUseProgram( m_id );
+	glUseProgram( m_id );
 }
 
 
 void ShaderProgram::unbind() const
 {
-    glUseProgram( 0 );
+	glUseProgram( 0 );
 }
 
 
 void ShaderProgram::setUniform( int uLoc, UniformType type, float* value, int arraySize )
 {
 	assert( value );
+	assert( uLoc > -1 );
 	assert( arraySize > 0 );
 
 
-    using UniformMethod = void (*)(GLint, GLsizei, const GLfloat*);
-    UniformMethod uniformMethods[] =
-    {
-        glUniform1fv,
-        glUniform2fv,
-        glUniform3fv,
-        glUniform4fv
-    };
+	using UniformMethod = void (*)(GLint, GLsizei, const GLfloat*);
+	UniformMethod uniformMethods[] =
+	{
+		glUniform1fv,
+		glUniform2fv,
+		glUniform3fv,
+		glUniform4fv
+	};
 
-    auto index = static_cast<int>(type);
-    auto method = uniformMethods[index];
-    method( uLoc, arraySize, value );
+	auto index = static_cast<int>(type);
+	auto method = uniformMethods[index];
+	method( uLoc, arraySize, value );
+
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
 void ShaderProgram::setUniform( int uLoc, UniformType type, int* value, int arraySize )
 {
 	assert( value );
+	assert( uLoc > -1 );
 	assert( arraySize > 0 );
 
-    using UniformMethod = void (*)(GLint, GLsizei, const GLint*);
-    const UniformMethod uniformMethods[] =
-    {
-        glUniform1iv,
-        glUniform2iv,
-        glUniform3iv,
-        glUniform4iv
-    };
+	using UniformMethod = void (*)(GLint, GLsizei, const GLint*);
+	const UniformMethod uniformMethods[] =
+	{
+		glUniform1iv,
+		glUniform2iv,
+		glUniform3iv,
+		glUniform4iv
+	};
 
-    auto index = static_cast<int>(type);
-    auto method = uniformMethods[index];
-    method( uLoc, arraySize, value );
+	auto index = static_cast<int>(type);
+	auto method = uniformMethods[index];
+	method( uLoc, arraySize, value );
+
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
 void ShaderProgram::setUniformMatrix( int uLoc, UniformMatrixType type, float* value, int matricesCount, bool transpose )
 {
 	assert( value );
+	assert( uLoc > -1 );
 	assert( matricesCount > 0 );
 
-    using UniformMethod = void (*)(GLint, GLsizei, GLboolean, const GLfloat*);
-    const UniformMethod uniformMethods[] =
-    {
-        glUniformMatrix4fv,
-        glUniformMatrix3fv,
-        glUniformMatrix3x4fv,
-        glUniformMatrix4x3fv,
-        glUniformMatrix2x4fv,
-        glUniformMatrix4x2fv,
-        glUniformMatrix2x3fv,
-        glUniformMatrix3x2fv,
-        glUniformMatrix2fv
-    };
+	using UniformMethod = void (*)(GLint, GLsizei, GLboolean, const GLfloat*);
+	const UniformMethod uniformMethods[] =
+	{
+		glUniformMatrix4fv,
+		glUniformMatrix3fv,
+		glUniformMatrix3x4fv,
+		glUniformMatrix4x3fv,
+		glUniformMatrix2x4fv,
+		glUniformMatrix4x2fv,
+		glUniformMatrix2x3fv,
+		glUniformMatrix3x2fv,
+		glUniformMatrix2fv
+	};
 
-    auto index = static_cast<int>(type);
-    auto method = uniformMethods[index];
-    method( uLoc, matricesCount, transpose, value );
+	auto index = static_cast<int>(type);
+	auto method = uniformMethods[index];
+	method( uLoc, matricesCount, transpose, value );
+
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
@@ -163,23 +172,23 @@ int ShaderProgram::getUniformLocation( const char* variableName )
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    return glGetUniformLocation( m_id, variableName );
+	return glGetUniformLocation( m_id, variableName );
 }
 
-	
+
 void ShaderProgram::getUniform( int uLoc, float* buff )
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    glGetUniformfv( m_id, uLoc, buff );
+	glGetUniformfv( m_id, uLoc, buff );
 }
 
 
@@ -187,11 +196,11 @@ void ShaderProgram::getUniform( int uLoc, int* buff )
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    glGetUniformiv( m_id, uLoc, buff );
+	glGetUniformiv( m_id, uLoc, buff );
 }
 
 
@@ -199,11 +208,11 @@ int ShaderProgram::getUniformBlockIndex(const char* blockName) const
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    return glGetUniformBlockIndex( m_id, blockName );
+	return glGetUniformBlockIndex( m_id, blockName );
 }
 
 
@@ -211,13 +220,13 @@ int ShaderProgram::getUniformBlockSize(int blockIndex) const
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    int uniformBlockSize = 0;
-    glGetActiveUniformBlockiv( m_id, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
-    return uniformBlockSize;
+	int uniformBlockSize = 0;
+	glGetActiveUniformBlockiv( m_id, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
+	return uniformBlockSize;
 }
 
 
@@ -225,11 +234,11 @@ void ShaderProgram::assignBindingPointToUniformBlock(int blockIndex, int binding
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    glUniformBlockBinding( m_id, blockIndex, bindingPoint);
+	glUniformBlockBinding( m_id, blockIndex, bindingPoint);
 }
 
 
@@ -252,9 +261,9 @@ void ShaderProgram::getLinkingLog(std::string& result) const
 
 	if( logLength > 1 )
 	{
-        std::vector<GLchar> log(logLength);
-        glGetProgramInfoLog( m_id, logLength, 0, &log[0] );
-        result = std::string(&log[0]);
+		std::vector<GLchar> log(logLength);
+		glGetProgramInfoLog( m_id, logLength, 0, &log[0] );
+		result = std::string(&log[0]);
 	}
 }
 
@@ -269,12 +278,12 @@ unsigned int ShaderProgram::getAtachedShadersCount() const
 	return count;
 }
 
-	
+
 int ShaderProgram::getAtachedShaderIds( unsigned int* buff, unsigned int buffSize ) const
 {
 	if( !buffSize )
 		return 0;
-	
+
 	if( !m_id )
 	{
 		buff[0] = 0;

@@ -64,10 +64,10 @@ inline VertexArray::~VertexArray()
 inline void VertexArray::create()
 {
 	if( m_id )
-        return;
+		return;
 
 	glGenVertexArrays( 1, &m_id );
-    assert(glGetError() == GL_NO_ERROR);
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
@@ -83,8 +83,8 @@ inline void VertexArray::setIntAttribute(unsigned int index, DataType type, unsi
 #endif
 
 	const AttributeData ad = FormatData[type];
-    glVertexAttribIPointer(index, ad.components, ad.type, strideBytes, reinterpret_cast<void*>(offsetBytes));
-    assert(glGetError() == GL_NO_ERROR);
+	glVertexAttribIPointer(index, ad.components, ad.type, strideBytes, reinterpret_cast<void*>(offsetBytes));
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
@@ -99,35 +99,35 @@ inline void VertexArray::setFloatAttribute(unsigned int index, DataType type, un
 #endif
 
 	const AttributeData ad = FormatData[type];
-    glVertexAttribPointer(index, ad.components, ad.type, normalize, strideBytes, reinterpret_cast<void*>(offsetBytes));
-    assert(glGetError() == GL_NO_ERROR);
+	glVertexAttribPointer(index, ad.components, ad.type, normalize, strideBytes, reinterpret_cast<void*>(offsetBytes));
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
 inline void VertexArray::setAttributeUsage(unsigned int index, bool enable)
 {
-    using AttribMethod = void (*)(GLuint);
-    AttribMethod method[] =
-    {
-        glDisableVertexAttribArray,
-        glEnableVertexAttribArray
-    };
+	using AttribMethod = void (*)(GLuint);
+	AttribMethod method[] =
+	{
+		glDisableVertexAttribArray,
+		glEnableVertexAttribArray
+	};
 
-    method[static_cast<unsigned int>(enable)](index);
+	method[static_cast<unsigned int>(enable)](index);
 }
 
 
 inline void VertexArray::bind() const
 {
 	glBindVertexArray( m_id );
-    assert(glGetError() == GL_NO_ERROR);
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
 inline void VertexArray::unbind() const
 {
 	glBindVertexArray( 0 );
-    assert(glGetError() == GL_NO_ERROR);
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 

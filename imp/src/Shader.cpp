@@ -24,13 +24,13 @@ int Shader::create( Type type, const std::string& sourceCode )
 		glDeleteShader( m_id );
 
 	// create an empty shader object
-    m_id = glCreateShader( static_cast<int>(type) );
+	m_id = glCreateShader( static_cast<int>(type) );
 	if( !m_id )
 		return -1;
 
 	// replace the source code in a shader object
-    const char* source = sourceCode.c_str();
-    glShaderSource( m_id, 1, &source, 0 );
+	const char* source = sourceCode.c_str();
+	glShaderSource( m_id, 1, &source, 0 );
 	if( glGetError() != GL_NO_ERROR )
 		return -2;
 
@@ -50,7 +50,7 @@ int Shader::create( Type type, const std::string& sourceCode )
 
 void Shader::getCompilationLog(std::string& result) const
 {
-    if( !m_id )
+	if( !m_id )
 		return;
 
 	int logLength = 0;
@@ -58,9 +58,9 @@ void Shader::getCompilationLog(std::string& result) const
 
 	if( logLength > 1 )
 	{
-        std::vector<GLchar> log(logLength);
-        glGetShaderInfoLog( m_id, logLength, NULL, &log[0] );
-        result = std::string(&log[0]);
+		std::vector<GLchar> log(logLength);
+		glGetShaderInfoLog( m_id, logLength, NULL, &log[0] );
+		result = std::string(&log[0]);
 	}
 }
 
@@ -68,13 +68,13 @@ void Shader::getCompilationLog(std::string& result) const
 Shader::Type Shader::getType() const
 {
 	if( !m_id )
-        return Type::FRAGMENT_SHADER;
+		return Type::FRAGMENT_SHADER;
 
 	int type;
 	glGetShaderiv( m_id, GL_SHADER_TYPE, &type );
 	if( type == GL_VERTEX_SHADER )
-        return Type::VERTEX_SHADER;
-    return Type::FRAGMENT_SHADER;
+		return Type::VERTEX_SHADER;
+	return Type::FRAGMENT_SHADER;
 }
 
 

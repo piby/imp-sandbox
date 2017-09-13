@@ -51,20 +51,20 @@ void init()
 	imp::Shader fragShader;
 
 	vertSource = loadShader(dataPath + "shaders/basic.vs");
-    if(vertShader.create(imp::Shader::Type::VERTEX_SHADER, vertSource) < 0)
-    {
-        std::string log;
-        vertShader.getCompilationLog(log);
-        std::cout << log;
-    }
+	if(vertShader.create(imp::Shader::Type::VERTEX_SHADER, vertSource) < 0)
+	{
+		std::string log;
+		vertShader.getCompilationLog(log);
+		std::cout << log;
+	}
 
 	fragSource = loadShader(dataPath + "shaders/basic.fs");
-    if(fragShader.create(imp::Shader::Type::FRAGMENT_SHADER, fragSource) < 0)
-    {
-        std::string log;
-        vertShader.getCompilationLog(log);
-        std::cout << log;
-    }
+	if(fragShader.create(imp::Shader::Type::FRAGMENT_SHADER, fragSource) < 0)
+	{
+		std::string log;
+		vertShader.getCompilationLog(log);
+		std::cout << log;
+	}
 
 	basicProgram.create();
 	basicProgram.attach(vertShader);
@@ -73,29 +73,35 @@ void init()
 	{
 		std::string log;
 		basicProgram.getLinkingLog(log);
-        std::cout << log;
+		std::cout << log;
 	}
 
-    fullscreenQuadDataVBO.create(
-        VertexBuffer::Type::VERTEX_DATA,
-        VertexBuffer::UsageFlag::SPECIFIED_ONCE,
-        quadDataSize, quadData);
+	int textureValue = 0;
+	basicProgram.bind();
+	basicProgram.setUniform(0, ShaderProgram::UniformType::SINGLE_VALUE, &textureValue);
 
-    fullscreenQuadIndexVBO.create(
-		VertexBuffer::Type::INDEX_DATA,
-		VertexBuffer::UsageFlag::SPECIFIED_ONCE,
+	assert(glGetError() == GL_NO_ERROR);
+
+	fullscreenQuadDataVBO.create(
+		BufferType::VERTEX_DATA,
+		BufferUsageFlag::SPECIFIED_ONCE,
+		quadDataSize, quadData);
+
+	fullscreenQuadIndexVBO.create(
+		BufferType::INDEX_DATA,
+		BufferUsageFlag::SPECIFIED_ONCE,
 		quadIndicesSize, quadIndices);
 
 	unsigned int sf = sizeof(float);
 	fullscreenQuadVAO.create();
 	fullscreenQuadVAO.bind();
 
-    fullscreenQuadDataVBO.bind();
-    fullscreenQuadVAO.setFloatAttribute(0, VertexArray::DataType::FLOAT_3_COMPONENTS, 0, 5*sf);
-    fullscreenQuadVAO.setAttributeUsage(0, true);
-    fullscreenQuadVAO.setFloatAttribute(1, VertexArray::DataType::FLOAT_2_COMPONENTS, 3*sf, 5*sf);
-    fullscreenQuadVAO.setAttributeUsage(1, true);
-    fullscreenQuadIndexVBO.bind();
+	fullscreenQuadDataVBO.bind();
+	fullscreenQuadVAO.setFloatAttribute(0, VertexArray::DataType::FLOAT_3_COMPONENTS, 0, 5*sf);
+	fullscreenQuadVAO.setAttributeUsage(0, true);
+	fullscreenQuadVAO.setFloatAttribute(1, VertexArray::DataType::FLOAT_2_COMPONENTS, 3*sf, 5*sf);
+	fullscreenQuadVAO.setAttributeUsage(1, true);
+	fullscreenQuadIndexVBO.bind();
 
 	fullscreenQuadVAO.unbind();
 
@@ -105,42 +111,46 @@ void init()
 		for(const auto& texture : meshData.textures)
 		{
 			auto& td = texture.second;
-			staticMeshTexture.create(Texture::TexelFormat::RGBA_8_8_8_8_UNSIGNED_BYTE, td.width, td.height, td.imageData);
+			staticMeshTexture.create(Texture::TexelFormat::RGB_8_8_8_UNSIGNED_BYTE, td.width, td.height, td.imageData);
+			staticMeshTexture.setWrapMode(td.wrapS, td.wrapT, td.wrapR);
+			staticMeshTexture.setFilters(td.minFilter, td.magFilter);
+			staticMeshTexture.genMipmaps();
 			break; // TEMP: asume that there is only one model and handle only one texture for now
 		}
 	};
 
-    GLTFLoader gltfLoader;
-    gltfLoader.load(dataPath + "BoxTextured.gltf", meshDataHandler);
+	GLTFLoader gltfLoader;
+	gltfLoader.load(dataPath + "Duck.gltf", meshDataHandler);
 
-    lastDrawTime = chrono::steady_clock::now();
+	lastDrawTime = chrono::steady_clock::now();
 
 	glViewport(0, 0, windowWidth, windowHeight);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.1f, 0.0f, 0.0f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void draw()
 {
-    chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
-    chrono::duration<float> timeSpan = chrono::duration_cast<chrono::duration<float>>(currentTime - lastDrawTime);
-    float tick = timeSpan.count();
-    if(tick < (1.0f / 60.0f))
-        return;
-    lastDrawTime = currentTime;
+	chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
+	chrono::duration<float> timeSpan = chrono::duration_cast<chrono::duration<float>>(currentTime - lastDrawTime);
+	float tick = timeSpan.count();
+	if(tick < (1.0f / 60.0f))
+		return;
+	lastDrawTime = currentTime;
 
 
 	float width = static_cast<float>(windowWidth);
 	float height = static_cast<float>(windowHeight);
 
 	static float angle = 0.0f;
-    angle += tick;
-	glm::mat4 proj = glm::perspectiveFov(45.0f, width, height, 0.1f, 100.0f);
-	glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -10.0f));
-	model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+	angle += tick;
+	glm::mat4 proj = glm::perspectiveFov(45.0f, width, height, 0.1f, 300.0f);
+	glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0.0f, -50.0f, -250.0f));
+	model = glm::rotate(model, angle, glm::vec3(0.0f, 0.9f, 0.1f));
 	glm::mat4 view = glm::mat4(1.0);
 
 
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	basicProgram.bind();
 	assert(glGetError() == GL_NO_ERROR);
@@ -151,6 +161,7 @@ void draw()
 
 	assert(glGetError() == GL_NO_ERROR);
 
+	glActiveTexture(GL_TEXTURE0);
 	staticMeshTexture.bind();
 	for( const auto& mesh : staticMeshes )
 		mesh.draw();

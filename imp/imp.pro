@@ -28,11 +28,13 @@ HEADERS += \
  include/Frustum.hpp \
  include/Texture.hpp \
  include/Texture.inl \
+ include/TextureFlags.hpp \
  include/Shader.hpp \
  include/ShaderProgram.hpp \
  include/FrameBuffer.hpp \
  include/VertexBuffer.hpp \
  include/VertexBuffer.inl \
+ include/BufferFlags.hpp \
  include/UniformBuffer.hpp \
  include/UniformBuffer.inl \
  include/VertexArray.hpp \

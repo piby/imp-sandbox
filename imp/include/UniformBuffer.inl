@@ -21,7 +21,7 @@ inline bool UniformBuffer::create( UniformBuffer::UsageFlag usageFlag, unsigned 
 		return 0;
 
 	glBindBuffer( GL_UNIFORM_BUFFER, m_id );
-    glBufferData( GL_UNIFORM_BUFFER, sizeInBytes, data, static_cast<unsigned int>(usageFlag) );
+	glBufferData( GL_UNIFORM_BUFFER, sizeInBytes, data, static_cast<unsigned int>(usageFlag) );
 
 	if( glGetError() != GL_NO_ERROR )
 		return 0;
@@ -74,11 +74,11 @@ void UniformBuffer::setBindingPoint( unsigned int bindingPoint )
 {
 #ifdef IMP_DEBUG
 
-    assert( m_id );
+	assert( m_id );
 
 #endif
 
-    glBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, m_id );
+	glBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, m_id );
 }
 
 

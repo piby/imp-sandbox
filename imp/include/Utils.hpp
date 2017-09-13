@@ -15,14 +15,14 @@ const unsigned int quadIndicesSize = sizeof(quadIndices);
 
 const float quadData[] =
 {
-    -1.0f,  1.0f, 0.0f,		// vert 0
-     0.0f, 1.0f,			// uv 0
-    -1.0f, -1.0f, 0.0f,		// vert 1
-     0.0f, 0.0f,			// uv 1
-     1.0f,  1.0f, 0.0f,		// vert 2
-     1.0f, 1.0f,			// uv 2
-     1.0f, -1.0f, 0.0f,		// vert 3
-     1.0f, 0.0f 			// uv 3
+	-1.0f,  1.0f, 0.0f,		// vert 0
+	 0.0f, 1.0f,			// uv 0
+	-1.0f, -1.0f, 0.0f,		// vert 1
+	 0.0f, 0.0f,			// uv 1
+	 1.0f,  1.0f, 0.0f,		// vert 2
+	 1.0f, 1.0f,			// uv 2
+	 1.0f, -1.0f, 0.0f,		// vert 3
+	 1.0f, 0.0f 			// uv 3
 };
 
 const unsigned int quadDataSize = sizeof(quadData);

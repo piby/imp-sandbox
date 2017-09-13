@@ -28,7 +28,7 @@ inline unsigned short Texture::getHeight() const
 }
 
 
-inline Texture::MinFilter Texture::getMinFilter() const
+inline MinFilter Texture::getMinFilter() const
 {
 
 #ifdef IMP_DEBUG
@@ -47,7 +47,7 @@ inline Texture::MinFilter Texture::getMinFilter() const
 }
 
 
-inline Texture::MagFilter Texture::getMagFilter() const
+inline MagFilter Texture::getMagFilter() const
 {
 
 #ifdef IMP_DEBUG
@@ -66,7 +66,7 @@ inline Texture::MagFilter Texture::getMagFilter() const
 }
 
 
-inline Texture::WrapMode Texture::getSWrapMode() const
+inline WrapMode Texture::getSWrapMode() const
 {
 
 #ifdef IMP_DEBUG
@@ -85,7 +85,7 @@ inline Texture::WrapMode Texture::getSWrapMode() const
 }
 
 
-inline Texture::WrapMode Texture::getTWrapMode() const
+inline WrapMode Texture::getTWrapMode() const
 {
 
 #ifdef IMP_DEBUG
@@ -104,7 +104,7 @@ inline Texture::WrapMode Texture::getTWrapMode() const
 }
 
 
-inline Texture::WrapMode Texture::getRWrapMode() const
+inline WrapMode Texture::getRWrapMode() const
 {
 
 #ifdef IMP_DEBUG

@@ -12,7 +12,7 @@ inline VertexBuffer::~VertexBuffer()
 }
 
 
-inline bool VertexBuffer::create( VertexBuffer::Type type, VertexBuffer::UsageFlag usageFlag, unsigned int sizeInBytes, const void* data )
+inline bool VertexBuffer::create( BufferType type, BufferUsageFlag usageFlag, unsigned int sizeInBytes, const void* data )
 {
 	if( !m_id ) 
 		glGenBuffers( 1, &m_id );
@@ -54,7 +54,7 @@ inline void VertexBuffer::unbind() const
 
 
 template<typename DataType>
-inline DataType* VertexBuffer::mapBuffer( AccessFlag af )
+inline DataType* VertexBuffer::mapBuffer( BufferAccessFlag af )
 {
 
 #ifdef IMP_DEBUG
@@ -126,7 +126,7 @@ inline unsigned int VertexBuffer::getId() const
 }
 
 
-inline VertexBuffer::Type VertexBuffer::getType() const
+inline BufferType VertexBuffer::getType() const
 {
 	return m_bufferType;
 }

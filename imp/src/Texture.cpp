@@ -42,7 +42,7 @@ Texture::~Texture()
 }
 
 
-bool Texture::create( TexelFormat pf, unsigned short width, unsigned short height, void* data )
+void Texture::create( TexelFormat pf, unsigned short width, unsigned short height, const void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -57,12 +57,7 @@ bool Texture::create( TexelFormat pf, unsigned short width, unsigned short heigh
 	m_height = height;
 	m_pixelFormat = pf;
 
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-
 	glBindTexture( GL_TEXTURE_2D, m_id );
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
 
 	const TexelFormatData fd = FormatData[m_pixelFormat];
 	glTexImage2D( GL_TEXTURE_2D,
@@ -75,15 +70,12 @@ bool Texture::create( TexelFormat pf, unsigned short width, unsigned short heigh
 				  fd.type,
 				  data );
 
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-
-	setFilters( Texture::MinFilter::LINEAR, Texture::MagFilter::LINEAR );
-	return 1;
+	assert(glGetError() == GL_NO_ERROR);
+	setFilters( MinFilter::LINEAR, MagFilter::LINEAR );
 }
 
 
-bool Texture::genMipmaps()
+void Texture::genMipmaps()
 {
 
 #ifdef IMP_DEBUG
@@ -97,17 +89,15 @@ bool Texture::genMipmaps()
 #endif
 
 	if( !m_id )
-		return 0;
+		return;
 
 	glGenerateMipmap( GL_TEXTURE_2D );
 
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-	return 1;
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
-bool Texture::setMipmap( unsigned int level, void* data )
+void Texture::setMipmap( unsigned int level, void* data )
 {
 #ifdef IMP_DEBUG
 
@@ -120,7 +110,7 @@ bool Texture::setMipmap( unsigned int level, void* data )
 #endif
 
 	if( !data || !m_id || !level )
-		return 0;
+		return;
 
 	unsigned int w = m_width >> level;
 	unsigned int h = m_height >> level;
@@ -128,7 +118,7 @@ bool Texture::setMipmap( unsigned int level, void* data )
 	// if both mipmap width and height
 	// are equal 0 then level was to big
 	if( !w && !h )
-		return 0;
+		return;
 
 	if( w == 0 )
 		w = 1;
@@ -145,14 +135,12 @@ bool Texture::setMipmap( unsigned int level, void* data )
 				  fd.format,
 				  fd.type,
 				  data );
-				  
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-	return 1;				  
+
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
-bool Texture::createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height )
+void Texture::createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -167,8 +155,7 @@ bool Texture::createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, u
 	m_height = height;
 	m_pixelFormat = pf;
 
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
+	assert(glGetError() == GL_NO_ERROR);
 
 	const TexelFormatData fd = FormatData[m_pixelFormat];
 	glBindTexture( GL_TEXTURE_2D, m_id );
@@ -181,14 +168,11 @@ bool Texture::createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, u
 					  height,
 					  0 );
 	
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-
-	return 1;
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
-bool Texture::replace( unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height, void* data )
+void Texture::replace( unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height, void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -205,12 +189,9 @@ bool Texture::replace( unsigned short llxCorner, unsigned short llyCorner, unsig
 					 fd.type,
 					 data );
 					 
-	if( glGetError() != GL_NO_ERROR )
-		return 0;
-
 	// NOTE: mip maps aren't generated
 
-	return 1;
+	assert(glGetError() == GL_NO_ERROR);
 }
 
 
