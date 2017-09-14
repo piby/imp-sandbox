@@ -27,7 +27,7 @@ StaticMesh::StaticMesh()
 }
 
 
-void StaticMesh::create( const MeshData& data )
+void StaticMesh::create( const imp::MeshData& data )
 {
 	m_indicesCount = data.indicesCount;
 	m_indicesType = data.indicesType;

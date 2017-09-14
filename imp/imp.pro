@@ -40,7 +40,8 @@ HEADERS += \
  include/VertexArray.hpp \
  include/VertexArray.inl \
  include/SimpleCamera.hpp \
- include/SimpleCamera.inl
+ include/SimpleCamera.inl \
+ include/MeshData.hpp
 
 SOURCES += \
  src/Utils.cpp \

@@ -18,7 +18,7 @@ public:
     StaticMesh();
 
     /// Upload mesh data to GPU
-    void create( const MeshData& data );
+    void create( const imp::MeshData& data );
 
     /// Draw mesh
     void draw() const;

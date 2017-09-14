@@ -7,6 +7,7 @@
 
 // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
 
+using namespace imp;
 
 // Attributes supported by builder
 static const std::map<MeshData::Attribute, std::string> MeshAttributes =

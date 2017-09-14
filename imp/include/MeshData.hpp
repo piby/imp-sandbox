@@ -1,11 +1,14 @@
-#ifndef MESH_DATA
-#define MESH_DATA
+#ifndef IMP_MESH_DATA
+#define IMP_MESH_DATA
 
 #include <cstdint>
 #include <vector>
 #include <map>
 #include <array>
 #include "TextureFlags.hpp"
+
+namespace imp
+{
 
 class TextureData
 {
@@ -51,10 +54,10 @@ public:
 public:
 
 	/// Number of vertex definitions in attributes vector
-	std::uint32_t vertexCount;
+	uint32_t vertexCount;
 
 	/// Number of indices defined in indices array
-	std::uint32_t indicesCount;
+	uint32_t indicesCount;
 
 	/// Indices data type, eg. GL_UNSIGNED_INT
 	int indicesType;
@@ -64,13 +67,13 @@ public:
 
 	/// Vertex attributes in form of array of structures
 	/// containing all data for each vertex
-	std::vector<std::uint8_t> attributesData;
+	std::vector<uint8_t> attributesData;
 
 	/// Vertex indices
-	std::vector<std::uint8_t> indicesData;
+	std::vector<uint8_t> indicesData;
 
 	/// Specifies what kind of primitives to render, eg. GL_TRIANGLES
-	std::uint32_t drawMode;
+	uint32_t drawMode;
 
 	/// Mesh bounding box
 	std::array<float, 4> boundingBoxMin;
@@ -79,5 +82,7 @@ public:
 	/// Map of textures and their names
 	std::map<std::string, TextureData> textures;
 };
+
+}
 
 #endif // MESH_DATA

@@ -10,7 +10,7 @@ class GLTFLoader
 {
 public:
 
-    typedef std::function<void (MeshData&)> MeshDataHandler;
+    typedef std::function<void (imp::MeshData&)> MeshDataHandler;
 
 public:
 

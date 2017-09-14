@@ -15,7 +15,6 @@ LIBS += \
 
 HEADERS = \
     src/GLTFLoader.hpp \
-    src/MeshData.hpp \
     src/StaticMesh.hpp
 
 SOURCES = \

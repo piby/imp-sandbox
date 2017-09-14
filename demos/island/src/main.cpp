@@ -28,7 +28,7 @@ const int windowHeight = 600;
 chrono::steady_clock::time_point lastDrawTime;
 
 SimpleCamera simpleCamera;
-
+StaticMesh fullscreenQuad;
 VertexBuffer fullscreenQuadDataVBO;
 VertexBuffer fullscreenQuadIndexVBO;
 VertexArray fullscreenQuadVAO;
@@ -82,28 +82,9 @@ void init()
 
 	assert(glGetError() == GL_NO_ERROR);
 
-	fullscreenQuadDataVBO.create(
-		BufferType::VERTEX_DATA,
-		BufferUsageFlag::SPECIFIED_ONCE,
-		quadDataSize, quadData);
-
-	fullscreenQuadIndexVBO.create(
-		BufferType::INDEX_DATA,
-		BufferUsageFlag::SPECIFIED_ONCE,
-		quadIndicesSize, quadIndices);
-
-	unsigned int sf = sizeof(float);
-	fullscreenQuadVAO.create();
-	fullscreenQuadVAO.bind();
-
-	fullscreenQuadDataVBO.bind();
-	fullscreenQuadVAO.setFloatAttribute(0, VertexArray::DataType::FLOAT_3_COMPONENTS, 0, 5*sf);
-	fullscreenQuadVAO.setAttributeUsage(0, true);
-	fullscreenQuadVAO.setFloatAttribute(1, VertexArray::DataType::FLOAT_2_COMPONENTS, 3*sf, 5*sf);
-	fullscreenQuadVAO.setAttributeUsage(1, true);
-	fullscreenQuadIndexVBO.bind();
-
-	fullscreenQuadVAO.unbind();
+	MeshData fullscreenQuadData;
+	generateQuad(fullscreenQuadData);
+	fullscreenQuad.create(fullscreenQuadData);
 
 	auto meshDataHandler = [&staticMeshes](MeshData& meshData) {
 		staticMeshes.push_back(StaticMesh());
@@ -163,17 +144,12 @@ void draw()
 
 	glActiveTexture(GL_TEXTURE0);
 	staticMeshTexture.bind();
+
 	for( const auto& mesh : staticMeshes )
 		mesh.draw();
 
-/*
-	fullscreenQuadVAO.bind();
+	//fullscreenQuad.draw();
 
-	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
-
-	fullscreenQuadVAO.unbind();
-	basicProgram.unbind();
-*/
 	assert(glGetError() == GL_NO_ERROR);
 
 	// render cune map:
