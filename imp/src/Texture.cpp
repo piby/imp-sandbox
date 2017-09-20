@@ -6,23 +6,22 @@ using namespace imp;
 
 struct TexelFormatData
 {
-	int internalFormat;
-	int format;
-	int type;
+	GLint internalFormat;
+	GLenum format;
+	GLenum type;
 };
 
-static std::map<Texture::TexelFormat, TexelFormatData> FormatData =
+static std::map<Texture::Format, TexelFormatData> FormatData =
 {
-	{ Texture::TexelFormat::RGB_8_8_8_BYTE,					{GL_RGB8,	GL_RGB,		GL_BYTE} },
-	{ Texture::TexelFormat::RGB_8_8_8_UNSIGNED_BYTE,		{GL_RGB8,	GL_RGB,		GL_UNSIGNED_BYTE} },
-	{ Texture::TexelFormat::RGBA_8_8_8_8_BYTE,				{GL_RGBA8,	GL_RGBA,	GL_BYTE} },
-	{ Texture::TexelFormat::RGBA_8_8_8_8_UNSIGNED_BYTE,		{GL_RGBA8,	GL_RGBA,	GL_UNSIGNED_BYTE} },
+	{ Texture::Format::RGB_8_8_8,		{GL_RGB8,	GL_RGB,		GL_UNSIGNED_BYTE} },
+	{ Texture::Format::RGBA_8_8_8_8,	{GL_RGBA8,	GL_RGBA,	GL_UNSIGNED_BYTE} },
 };
 
 
-Texture::Texture():	m_id(0),
-					m_width(0),
-					m_height(0)
+Texture::Texture()
+	: m_id(0)
+	, m_width(0)
+	, m_height(0)
 {
 }
 
@@ -42,16 +41,14 @@ Texture::~Texture()
 }
 
 
-void Texture::create( TexelFormat pf, unsigned short width, unsigned short height, const void* data )
+void Texture::create( Format pf, unsigned short width, unsigned short height, const void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
 
-	// reuse identifier or generate new one
-	if( ( m_width > 0 ) || ( m_height > 0 ) )
+	if( ( m_width != width ) || ( m_height != height ) )
 		glDeleteTextures( 1, &m_id );
-	else
-		glGenTextures( 1, &m_id );
+	glGenTextures( 1, &m_id );
 
 	m_width  = width;
 	m_height = height;
@@ -140,7 +137,7 @@ void Texture::setMipmap( unsigned int level, void* data )
 }
 
 
-void Texture::createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height )
+void Texture::createFromFrameBuffer( Format pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -230,7 +227,7 @@ bool Texture::setAnisotropicFilter( float value )
 	else
 	{
 		float maxValue;
-        glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxValue );
+		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxValue );
 
 		if( maxValue < value )
 			value = maxValue;

@@ -2,109 +2,113 @@
 
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glcorearb.h>
+#include <map>
 
 using namespace imp;
 
-// http://www.gamedev.net/reference/articles/article2331.asp
-// http://www.codesampler.com/oglsrc/oglsrc_14.htm#ogl_frame_buffer_object
 
-// NOTE: this class only allows to add depth buffer to fbo
-// it is also possible to add stencil and colour buffers;
-// also this class renders to texture - it is posible
-// to render to attached color buffer
-
-FrameBufferObject::FrameBufferObject()
+static std::map<FrameBuffer::Attachment, GLenum> AttachmentData =
 {
-	glGenFramebuffers( 1, &m_fboId );
+	{ FrameBuffer::Attachment::COLOR_0,	GL_COLOR_ATTACHMENT0 },
+	{ FrameBuffer::Attachment::COLOR_1,	GL_COLOR_ATTACHMENT1 },
+	{ FrameBuffer::Attachment::COLOR_2,	GL_COLOR_ATTACHMENT2 },
+	{ FrameBuffer::Attachment::COLOR_3,	GL_COLOR_ATTACHMENT3 },
+	{ FrameBuffer::Attachment::DEPTH,	GL_DEPTH_ATTACHMENT },
+	{ FrameBuffer::Attachment::STENCIL,	GL_STENCIL_ATTACHMENT },
+};
+
+
+FrameBuffer::FrameBuffer()
+	: m_id(0)
+	, m_width(0)
+	, m_height(0)
+{
 }
 
 
-FrameBufferObject::~FrameBufferObject()
+FrameBuffer::~FrameBuffer()
 {
+	if( !m_id )
+		return;
+
+	glDeleteFramebuffers( 1, &m_id );
 }
 
 
-bool FrameBufferObject::Create( unsigned int width, unsigned int height )
+void FrameBuffer::create( unsigned int width, unsigned int height )
 {
-	glBindFramebuffer( GL_FRAMEBUFFER, m_fboId );
+	if( m_id )
+		glDeleteFramebuffers( 1, &m_id );
+	glGenFramebuffers( 1, &m_id );
 
-	// create render buffer that will be used as depth buffer
-	glGenRenderbuffers( 1, &m_depthBufferId );
-	glBindRenderbuffer( GL_RENDERBUFFER, m_depthBufferId );
-
-	// alocate space for render buffer
-	glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height );
-
-	// attach redner buffer to currently bound frame buffer object
-	glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferId );
-
-	// create texture
-	glGenTextures( 1, &m_textureId );
-	glBindTexture( GL_TEXTURE_2D, m_textureId );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8,  width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	// set filters and generate mipmaps - TODO: add function parameters
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	//glGenerateMipmap( GL_TEXTURE_2D );
-
-	// attach created texture to FBO
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureId, 0 );
-
-	bool status = ( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
-
-	// switch back to standard buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// if all went OK return true
-	return status;
+	m_width = static_cast<uint16_t>(width);
+	m_height = static_cast<uint16_t>(height);
+	glBindFramebuffer( GL_FRAMEBUFFER, m_id );
 }
 
 
-void FrameBufferObject::Destroy()
+void FrameBuffer::attach( FrameBuffer::Attachment attachment, const Texture& texture )
 {
-    glDeleteTextures( 1, &m_textureId );
-	glDeleteFramebuffers( 1, &m_fboId );
-	glDeleteRenderbuffers( 1, &m_depthBufferId );
+#ifdef IMP_DEBUG
+
+	int boundFBId;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
+	assert( boundFBId == m_id );
+
+#endif
+
+	assert( m_id );
+	assert( ( texture.getWidth() == m_width) && ( texture.getHeight() == m_height ) );
+
+	glFramebufferTexture2D( GL_FRAMEBUFFER, AttachmentData[attachment], GL_TEXTURE_2D, texture.getId(), 0 );
 }
 
 
-void FrameBufferObject::Bind()
+void FrameBuffer::attach( FrameBuffer::Attachment attachment, const RenderBuffer& renderBuffer )
 {
-	glBindFramebuffer( GL_FRAMEBUFFER, m_fboId );
-	glViewport( 0, 0, GetWidth(), GetHeight() );
+#ifdef IMP_DEBUG
+
+	int boundFBId;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
+	assert( boundFBId == m_id );
+
+#endif
+
+	assert( m_id );
+	assert( ( renderBuffer.getWidth() == m_width) && ( renderBuffer.getHeight() == m_height ) );
+
+	glFramebufferRenderbuffer( GL_FRAMEBUFFER, AttachmentData[attachment], GL_RENDERBUFFER, renderBuffer.getId() );
 }
 
 
-void FrameBufferObject::Unbind()
+void FrameBuffer::bind()
+{
+	glBindFramebuffer( GL_FRAMEBUFFER, m_id );
+	glViewport( 0, 0, m_width, m_height );
+
+	assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
+}
+
+
+void FrameBuffer::unbind()
 {
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 }
 
 
-int FrameBufferObject::GetWidth()
+int FrameBuffer::getWidth()
 {
-	int width;
-	glGetRenderbufferParameteriv( GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width );
-	return width;
+	return m_width;
 }
 
 
-int FrameBufferObject::GetHeight()
+int FrameBuffer::getHeight()
 {
-	int height;
-	glGetRenderbufferParameteriv( GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height );
-	return height;
+	return m_height;
 }
 
 
-unsigned int FrameBufferObject::GetTextureId()
+unsigned int FrameBuffer::getId()
 {
-	return m_textureId;
-}
-
-
-unsigned int FrameBufferObject::GetFBOId()
-{
-	return m_fboId;
+	return m_id;
 }

@@ -92,7 +92,7 @@ void init()
 		for(const auto& texture : meshData.textures)
 		{
 			auto& td = texture.second;
-			staticMeshTexture.create(Texture::TexelFormat::RGB_8_8_8_UNSIGNED_BYTE, td.width, td.height, td.imageData);
+			staticMeshTexture.create(Texture::Format::RGB_8_8_8, td.width, td.height, td.imageData);
 			staticMeshTexture.setWrapMode(td.wrapS, td.wrapT, td.wrapR);
 			staticMeshTexture.setFilters(td.minFilter, td.magFilter);
 			staticMeshTexture.genMipmaps();

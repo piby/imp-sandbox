@@ -1,60 +1,77 @@
-#ifndef IMP_FRAME_BUFFER_OBJECT_HPP
-#define IMP_FRAME_BUFFER_OBJECT_HPP
+#ifndef IMP_FRAME_BUFFER_HPP
+#define IMP_FRAME_BUFFER_HPP
 
+#include "Texture.hpp"
+#include "RenderBuffer.hpp"
 
 namespace imp
 {
 
-class FrameBufferObject
+class FrameBuffer
 {
 
 public:
 
-	FrameBufferObject();
-	~FrameBufferObject();
+	/// Supported attachments
+	enum class Attachment
+	{
+		COLOR_0,
+		COLOR_1,
+		COLOR_2,
+		COLOR_3,
+		DEPTH,
+		STENCIL
+	};
 
-	// creates FBO, if all went ok it returns true
-	bool Create( unsigned int width, unsigned int height );
+public:
 
-	// removes FBO
-	void Destroy();
+	/// Constructor
+	FrameBuffer();
 
-	// start render to FBO
-	void Bind();
+	/// Destructor
+	~FrameBuffer();
 
-	// stop rendering to FBO
-	void Unbind();
 
-	// returns width of currently bound buffer 
-	int GetWidth();
+	/// Create frame buffer; if frame buffer was defined earlier
+	/// it will be replaced; frame buffer is left bound
+	void create( unsigned int width, unsigned int height );
 
-	// returns height of currently bound buffer 
-	int GetHeight();
 
-	// returns id of texture that was used as colour buffer
-	unsigned int GetTextureId();
+	/// Attach texture
+	void attach( Attachment attachment, const Texture& texture );
 
-	// returns FBO id
-	unsigned int GetFBOId();
+	/// Attach render buffer
+	void attach( Attachment attachment, const RenderBuffer& texture );
 
+
+	/// Bind frame buffer
+	void bind();
+
+	/// Unbind frame buffer
+	void unbind();
+
+
+	/// Returns frame buffer width
+	int getWidth();
+
+	/// Returns frame buffer height
+	int getHeight();
+
+	/// Returns id
+	unsigned int getId();
 
 private:
 
+	// opengl id of frame buffer
+	unsigned int m_id;
 
-	// handle to frame buffer object
-	unsigned int m_fboId;
+	// frame buffer width in pixels
+	unsigned short m_width;
 
-	// handle to depth buffer object
-	unsigned int m_depthBufferId;
-
-	// handle to texture that will be used like color buffer
-	unsigned int m_textureId;
-
-	//unsigned int m_stencilBufferID;
-	//unsigned int m_colorBufferID;
-
+	// frame buffer height in pixels
+	unsigned short m_height;
 };
 
 }
 
-#endif // IMP_FRAME_BUFFER_OBJECT_HPP
+#endif // IMP_FRAME_BUFFER_HPP

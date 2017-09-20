@@ -123,7 +123,7 @@ inline WrapMode Texture::getRWrapMode() const
 }
 
 
-inline Texture::TexelFormat Texture::getPixelFormat() const
+inline Texture::Format Texture::getPixelFormat() const
 {
 	return m_pixelFormat;
 }

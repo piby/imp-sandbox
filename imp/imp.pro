@@ -24,33 +24,35 @@ INCLUDEPATH += \
  $$PWD/include
 
 HEADERS += \
- include/Utils.hpp \
+ include/BufferFlags.hpp \
+ include/FrameBuffer.hpp \
  include/Frustum.hpp \
+ include/MeshData.hpp \
+ include/RenderBuffer.hpp \
+ include/Shader.hpp \
+ include/ShaderProgram.hpp \
+ include/SimpleCamera.inl \
+ include/SimpleCamera.hpp \
  include/Texture.hpp \
  include/Texture.inl \
  include/TextureFlags.hpp \
- include/Shader.hpp \
- include/ShaderProgram.hpp \
- include/FrameBuffer.hpp \
- include/VertexBuffer.hpp \
- include/VertexBuffer.inl \
- include/BufferFlags.hpp \
+ include/Utils.hpp \
  include/UniformBuffer.hpp \
  include/UniformBuffer.inl \
  include/VertexArray.hpp \
  include/VertexArray.inl \
- include/SimpleCamera.hpp \
- include/SimpleCamera.inl \
- include/MeshData.hpp
+ include/VertexBuffer.hpp \
+ include/VertexBuffer.inl
 
 SOURCES += \
  src/Utils.cpp \
+ src/FrameBuffer.cpp \
  src/Frustum.cpp \
  src/Texture.cpp \
  src/Shader.cpp \
  src/ShaderProgram.cpp \
- src/FrameBuffer.cpp \
- src/SimpleCamera.cpp
+ src/SimpleCamera.cpp \
+ src/RenderBuffer.cpp
 
 unix {
     target.path = /usr/lib

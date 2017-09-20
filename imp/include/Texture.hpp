@@ -12,20 +12,15 @@ class Texture
 
 public:
 
-	// NOTE: must start from 0 because it is used as an index
-	enum class TexelFormat
+	/// Supported texture formats
+	/// NOTE: must start from 0 because it is used as an index
+	enum class Format
 	{
 		// 24-bit R8 G8 B8
-		RGB_8_8_8_BYTE,
-
-		// 24-bit R8 G8 B8
-		RGB_8_8_8_UNSIGNED_BYTE,
+		RGB_8_8_8,
 
 		// 32-bit R8 G8 B8 A8
-		RGBA_8_8_8_8_BYTE,
-
-		// 32-bit R8 G8 B8 A8
-		RGBA_8_8_8_8_UNSIGNED_BYTE,
+		RGBA_8_8_8_8,
 		
 		// NOTE: when adding another formats
 		//		 modify also arrays storing 
@@ -34,95 +29,88 @@ public:
 
 public:
 
-	// constructor
+	/// Constructor
 	Texture();
 
-	// destructor
+	/// Destructor
 	~Texture();
 
 
-	// create texture; if texture was defined earlier
-	// it will be replaced; texture is left bound
-	void create(TexelFormat pf, unsigned short width, unsigned short height, const void *data );
+	/// Create texture; if texture was defined earlier
+	/// it will be replaced; texture is left bound
+	void create(Format pf, unsigned short width, unsigned short height, const void *data );
 
-	// generate mipmaps
+	/// Generate mipmaps
 	void genMipmaps();
 
-	// set mipmap at given level; level must be greater then 0;
-	// at level 1 data should point to texels of texture
-	// in which width and height are two times smaller;
-	// texture must be bound
+	/// Set mipmap at given level (level must be greater then 0);
+	/// At level 1 data should point to texels of two times smaller texture;
+	/// Texture must be bound
 	void setMipmap( unsigned int level, void* data );
 
-	// copy specified data from current frame buffer;
-	// if texture was defined earlier it will be replaced;
-	// texture is left bound
-	void createFromFrameBuffer( TexelFormat pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height ) ;
+	/// Copy specified data from current frame buffer; If texture was defined
+	/// earlier it will be replaced; Texture is left bound
+	void createFromFrameBuffer( Format pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height ) ;
 
 
-	// set min and mag filters; min filter is used 
-	// when pixel color is calculated basing on more
-	// then one texel, mag filter is used when color
-	// is calculated basing on one texel; texture
-	// must be bound
+	/// Set min and mag filters; min filter is used when pixel color is calculated
+	/// basing on more then one texel, mag filter is used when color is calculated
+	/// basing on one texel; texture must be bound
 	void setFilters( MinFilter minf, MagFilter magf );
 
-	// set anisotropic filtering; value should
-	// be equal or greater then 1.0 and smaler
-	// then max anisotropy wchih is usualy 2.0;
-	// if wallue will be out of this range it
-	// will be converted to nearest corect
-	// value; function will return 0 if this
-	// feature is unawelable or if there was an
-	// error; texture must be bound
+	/// Set anisotropic filtering; value should be equal or greater then 1.0 and
+	/// smaler then max anisotropy wchih is usualy 2.0; if wallue will be out of
+	/// this range it will be converted to nearest corect value; function will
+	/// return 0 if this feature is unawelable or if there was an error;
+	/// texture must be bound
 	bool setAnisotropicFilter( float value );
 
 
-	// set the wrap parameters for texture coordinates
+	/// Set the wrap parameters for texture coordinates
 	void setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord );
 
 
-	// bind texture
+	/// Bind texture
 	void bind() const;
 
-	// unbind texture
+	/// Unbind texture
 	void unbind() const;
 
 
-	// Bind texture and replace specified part of its data
-	// with different data; texture is automaticly bound
+	/// Bind texture and replace specified part of its data
+	/// with different data; texture is automaticly bound
 	void replace( unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height, void* data ) ;
 
 
-	// return texture width
+	/// Return texture width
 	unsigned short getWidth() const;
 
-	// return texture height
+	/// Return texture height
 	unsigned short getHeight() const;
 
 
-	// return texture min filter
+	/// Return texture min filter
 	MinFilter getMinFilter() const;
 
-	// return texture mag filter
+	/// Return texture mag filter
 	MagFilter getMagFilter() const;
 
 
-	// get wrap mode for texture s coordinate
+	/// Get wrap mode for texture s coordinate
 	WrapMode getSWrapMode() const;
 
-	// get wrap mode for texture t coordinate
+	/// Get wrap mode for texture t coordinate
 	WrapMode getTWrapMode() const;
 
-	// get wrap mode for texture r coordinate
+	/// Get wrap mode for texture r coordinate
 	WrapMode getRWrapMode() const;
 
 	
-	// return texture pixel format
-	TexelFormat getPixelFormat() const;
+	/// Return texture pixel format
+	Format getPixelFormat() const;
 
-	// return opengl id of texture
-unsigned int getId() const;
+	/// Return opengl id of texture
+	unsigned int getId() const;
 
 
 private:
@@ -137,7 +125,7 @@ private:
 	unsigned short m_height;
 
 	// pixel format
-	TexelFormat m_pixelFormat;
+	Format m_pixelFormat;
 
 };
 
