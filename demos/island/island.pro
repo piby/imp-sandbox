@@ -15,10 +15,12 @@ LIBS += \
 
 HEADERS = \
     src/GLTFLoader.hpp \
+    src/Scene.hpp \
     src/StaticMesh.hpp
 
 SOURCES = \
     src/main.cpp \
     src/GLTFLoader.cpp \
+    src/Scene.cpp \
     src/StaticMesh.cpp
 

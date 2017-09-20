@@ -5,208 +5,82 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/matrix.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
-#include "SimpleCamera.hpp"
-#include "Shader.hpp"
-#include "Texture.hpp"
-#include "ShaderProgram.hpp"
-#include "VertexBuffer.hpp"
-#include "VertexArray.hpp"
-#include "Utils.hpp"
-#include "StaticMesh.hpp"
-#include "GLTFLoader.hpp"
+#include "Scene.hpp"
 
-using namespace imp;
 namespace chrono = std::chrono;
 
-const int windowWidth = 800;
-const int windowHeight = 600;
-
-chrono::steady_clock::time_point lastDrawTime;
-
-SimpleCamera simpleCamera;
-StaticMesh fullscreenQuad;
-VertexBuffer fullscreenQuadDataVBO;
-VertexBuffer fullscreenQuadIndexVBO;
-VertexArray fullscreenQuadVAO;
-
-std::vector<StaticMesh> staticMeshes;
-Texture staticMeshTexture;
-
-ShaderProgram basicProgram;
-
-void init()
-{
-	GLenum error = glewInit();
-	if (error != GLEW_OK)
-		return;
-
-	std::string dataPath("data/");
-	std::string vertSource;
-	std::string fragSource;
-	imp::Shader vertShader;
-	imp::Shader fragShader;
-
-	vertSource = loadShader(dataPath + "shaders/basic.vs");
-	if(vertShader.create(imp::Shader::Type::VERTEX_SHADER, vertSource) < 0)
-	{
-		std::string log;
-		vertShader.getCompilationLog(log);
-		std::cout << log;
-	}
-
-	fragSource = loadShader(dataPath + "shaders/basic.fs");
-	if(fragShader.create(imp::Shader::Type::FRAGMENT_SHADER, fragSource) < 0)
-	{
-		std::string log;
-		vertShader.getCompilationLog(log);
-		std::cout << log;
-	}
-
-	basicProgram.create();
-	basicProgram.attach(vertShader);
-	basicProgram.attach(fragShader);
-	if( !basicProgram.link() )
-	{
-		std::string log;
-		basicProgram.getLinkingLog(log);
-		std::cout << log;
-	}
-
-	int textureValue = 0;
-	basicProgram.bind();
-	basicProgram.setUniform(0, ShaderProgram::UniformType::SINGLE_VALUE, &textureValue);
-
-	assert(glGetError() == GL_NO_ERROR);
-
-	MeshData fullscreenQuadData;
-	generateQuad(fullscreenQuadData);
-	fullscreenQuad.create(fullscreenQuadData);
-
-	auto meshDataHandler = [&staticMeshes](MeshData& meshData) {
-		staticMeshes.push_back(StaticMesh());
-		staticMeshes.back().create(meshData);
-		for(const auto& texture : meshData.textures)
-		{
-			auto& td = texture.second;
-			staticMeshTexture.create(Texture::Format::RGB_8_8_8, td.width, td.height, td.imageData);
-			staticMeshTexture.setWrapMode(td.wrapS, td.wrapT, td.wrapR);
-			staticMeshTexture.setFilters(td.minFilter, td.magFilter);
-			staticMeshTexture.genMipmaps();
-			break; // TEMP: asume that there is only one model and handle only one texture for now
-		}
-	};
-
-	GLTFLoader gltfLoader;
-	gltfLoader.load(dataPath + "Duck.gltf", meshDataHandler);
-
-	lastDrawTime = chrono::steady_clock::now();
-
-	glViewport(0, 0, windowWidth, windowHeight);
-	glClearColor(0.1f, 0.0f, 0.0f, 1.0f);
-	glEnable(GL_DEPTH_TEST);
-}
-
-void draw()
-{
-	chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
-	chrono::duration<float> timeSpan = chrono::duration_cast<chrono::duration<float>>(currentTime - lastDrawTime);
-	float tick = timeSpan.count();
-	if(tick < (1.0f / 60.0f))
-		return;
-	lastDrawTime = currentTime;
-
-
-	float width = static_cast<float>(windowWidth);
-	float height = static_cast<float>(windowHeight);
-
-	static float angle = 0.0f;
-	angle += tick;
-	glm::mat4 proj = glm::perspectiveFov(45.0f, width, height, 0.1f, 300.0f);
-	glm::mat4 model = glm::translate(glm::mat4(), glm::vec3(0.0f, -50.0f, -250.0f));
-	model = glm::rotate(model, angle, glm::vec3(0.0f, 0.9f, 0.1f));
-	glm::mat4 view = glm::mat4(1.0);
-
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	basicProgram.bind();
-	assert(glGetError() == GL_NO_ERROR);
-
-	glm::mat4 mvp = proj * view * model;
-	int projMatLoc = basicProgram.getUniformLocation("mvpMat");
-	basicProgram.setUniformMatrix(projMatLoc, ShaderProgram::UniformMatrixType::MATRIX_4_4, glm::value_ptr(mvp));
-
-	assert(glGetError() == GL_NO_ERROR);
-
-	glActiveTexture(GL_TEXTURE0);
-	staticMeshTexture.bind();
-
-	for( const auto& mesh : staticMeshes )
-		mesh.draw();
-
-	//fullscreenQuad.draw();
-
-	assert(glGetError() == GL_NO_ERROR);
-
-	// render cune map:
-	//   http://www.mujoco.org/book/file/desert.png
-	// ...
-}
 
 void processInput(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-	/*
-	float cameraSpeed = 0.05f;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraFront;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraFront;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	*/
+    /*
+    float cameraSpeed = 0.05f;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    */
 }
 
 int main(void)
 {
-	GLFWwindow* window;
+    GLsizei windowWidth = 800;
+    GLsizei windowHeight = 600;
+    GLFWwindow* window;
 
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
 
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(windowWidth, windowHeight, "Island demo", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(windowWidth, windowHeight, "Island demo", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
 
-	glfwSetKeyCallback(window, processInput);
+    glfwSetKeyCallback(window, processInput);
 
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
 
-	init();
+    /* Initialize demo */
+    chrono::steady_clock::time_point lastDrawTime;
 
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
-	{
-		draw();
+    GLenum error = glewInit();
+    if (error != GLEW_OK)
+        return -1;
 
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
+    Scene scene(windowWidth, windowHeight);
+    scene.create();
 
-		/* Poll for and process events */
-		glfwPollEvents();
-	}
+    /* Loop until the user closes the window */
+    while (!glfwWindowShouldClose(window))
+    {
+        /* Callculate time passed since last frame */
+        chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
+        chrono::duration<float> timeSpan = chrono::duration_cast<chrono::duration<float>>(currentTime - lastDrawTime);
+        float tick = timeSpan.count();
+        if(tick < (1.0f / 60.0f))
+            continue;
+        lastDrawTime = currentTime;
 
-	glfwTerminate();
-	return 0;
+        /* Update and draw scene */
+        scene.update(tick);
+        scene.draw();
+
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    return 0;
 }
