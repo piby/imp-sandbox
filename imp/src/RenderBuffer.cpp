@@ -44,7 +44,7 @@ RenderBuffer::~RenderBuffer()
 }
 
 
-void RenderBuffer::create( Format format, unsigned short width, unsigned short height )
+void RenderBuffer::create( Format format, GLsizei width, GLsizei height )
 {
 	m_format = format;
 	m_width = width;
@@ -84,19 +84,19 @@ void RenderBuffer::unbind() const
 }
 
 
-unsigned short RenderBuffer::getWidth() const
+GLsizei RenderBuffer::getWidth() const
 {
 	return m_width;
 }
 
 
-unsigned short RenderBuffer::getHeight() const
+GLsizei RenderBuffer::getHeight() const
 {
 	return m_height;
 }
 
 
-unsigned int RenderBuffer::getId() const
+GLuint RenderBuffer::getId() const
 {
 	return m_id;
 }

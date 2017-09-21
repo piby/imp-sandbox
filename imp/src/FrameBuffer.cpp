@@ -35,7 +35,7 @@ FrameBuffer::~FrameBuffer()
 }
 
 
-void FrameBuffer::create( unsigned int width, unsigned int height )
+void FrameBuffer::create( GLsizei width, GLsizei height )
 {
 	if( m_id )
 		glDeleteFramebuffers( 1, &m_id );
@@ -96,19 +96,19 @@ void FrameBuffer::unbind()
 }
 
 
-int FrameBuffer::getWidth()
+GLsizei FrameBuffer::getWidth()
 {
 	return m_width;
 }
 
 
-int FrameBuffer::getHeight()
+GLsizei FrameBuffer::getHeight()
 {
 	return m_height;
 }
 
 
-unsigned int FrameBuffer::getId()
+GLuint FrameBuffer::getId()
 {
 	return m_id;
 }

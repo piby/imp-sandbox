@@ -34,7 +34,7 @@ public:
 
 	/// Create frame buffer; if frame buffer was defined earlier
 	/// it will be replaced; frame buffer is left bound
-	void create( unsigned int width, unsigned int height );
+	void create(GLsizei width, GLsizei height );
 
 
 	/// Attach texture
@@ -52,24 +52,24 @@ public:
 
 
 	/// Returns frame buffer width
-	int getWidth();
+	GLsizei getWidth();
 
 	/// Returns frame buffer height
-	int getHeight();
+	GLsizei getHeight();
 
 	/// Returns id
-	unsigned int getId();
+	GLuint getId();
 
 private:
 
 	// opengl id of frame buffer
-	unsigned int m_id;
+	GLuint m_id;
 
 	// frame buffer width in pixels
-	unsigned short m_width;
+	GLsizei m_width;
 
 	// frame buffer height in pixels
-	unsigned short m_height;
+	GLsizei m_height;
 };
 
 }

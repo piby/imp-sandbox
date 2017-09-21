@@ -16,13 +16,13 @@ inline void Texture::unbind() const
 }
 
 
-inline unsigned short Texture::getWidth() const
+inline GLsizei Texture::getWidth() const
 {
 	return m_width;
 }
 
 
-inline unsigned short Texture::getHeight() const
+inline GLsizei Texture::getHeight() const
 {
 	return m_height;
 }
@@ -129,7 +129,7 @@ inline Texture::Format Texture::getPixelFormat() const
 }
 
 
-inline unsigned int Texture::getId() const
+inline GLuint Texture::getId() const
 {
 	return m_id;
 }

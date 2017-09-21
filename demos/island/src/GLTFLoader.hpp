@@ -10,13 +10,13 @@ class GLTFLoader
 {
 public:
 
-    typedef std::function<void (imp::MeshData&)> MeshDataHandler;
+	typedef std::function<void (imp::MeshData&)> MeshDataHandler;
 
 public:
 
-    GLTFLoader() = default;
+	GLTFLoader() = default;
 
-    bool load(const std::string &filename, MeshDataHandler handler);
+	bool load(const std::string &filename, MeshDataHandler handler);
 };
 
 #endif // GLTF_LOADER

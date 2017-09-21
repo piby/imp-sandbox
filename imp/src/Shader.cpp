@@ -78,7 +78,7 @@ Shader::Type Shader::getType() const
 }
 
 
-unsigned int Shader::getId() const
+GLuint Shader::getId() const
 {
 	return m_id;
 }

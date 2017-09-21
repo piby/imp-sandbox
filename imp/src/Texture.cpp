@@ -41,7 +41,7 @@ Texture::~Texture()
 }
 
 
-void Texture::create( Format pf, unsigned short width, unsigned short height, const void* data )
+void Texture::create( Format pf, GLsizei width, GLsizei height, const void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -50,8 +50,8 @@ void Texture::create( Format pf, unsigned short width, unsigned short height, co
 		glDeleteTextures( 1, &m_id );
 	glGenTextures( 1, &m_id );
 
-	m_width  = width;
-	m_height = height;
+	m_width  = static_cast<uint32_t>(width);
+	m_height = static_cast<uint32_t>(height);
 	m_pixelFormat = pf;
 
 	glBindTexture( GL_TEXTURE_2D, m_id );
@@ -60,8 +60,8 @@ void Texture::create( Format pf, unsigned short width, unsigned short height, co
 	glTexImage2D( GL_TEXTURE_2D,
 				  0,
 				  fd.internalFormat,
-				  m_width,
-				  m_height,
+				  width,
+				  height,
 				  0,
 				  fd.format,
 				  fd.type,
@@ -109,8 +109,8 @@ void Texture::setMipmap( unsigned int level, void* data )
 	if( !data || !m_id || !level )
 		return;
 
-	unsigned int w = m_width >> level;
-	unsigned int h = m_height >> level;
+	uint32_t w = m_width >> level;
+	uint32_t h = m_height >> level;
 
 	// if both mipmap width and height
 	// are equal 0 then level was to big
@@ -124,10 +124,10 @@ void Texture::setMipmap( unsigned int level, void* data )
 
 	TexelFormatData fd = FormatData[m_pixelFormat];
 	glTexImage2D( GL_TEXTURE_2D,
-				  level,
+				  static_cast<GLint>(level),
 				  fd.internalFormat,
-				  w,
-				  h,
+				  static_cast<GLsizei>(w),
+				  static_cast<GLsizei>(h),
 				  0,
 				  fd.format,
 				  fd.type,
@@ -169,7 +169,7 @@ void Texture::createFromFrameBuffer( Format pf, unsigned short llxCorner, unsign
 }
 
 
-void Texture::replace( unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height, void* data )
+void Texture::replace( GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei height, void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );

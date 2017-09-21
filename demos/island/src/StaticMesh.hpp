@@ -14,25 +14,25 @@ class StaticMesh
 
 public:
 
-    /// Construct
-    StaticMesh();
+	/// Construct
+	StaticMesh();
 
-    /// Upload mesh data to GPU
-    void create( const imp::MeshData& data );
+	/// Upload mesh data to GPU
+	void create( const imp::MeshData& data );
 
-    /// Draw mesh
-    void draw() const;
+	/// Draw mesh
+	void draw() const;
 
 protected:
 
-    std::uint32_t m_indicesCount;
-    GLenum m_indicesType;
-    GLenum m_drawMode;
+	std::uint32_t m_indicesCount;
+	GLenum m_indicesType;
+	GLenum m_drawMode;
 
-    imp::VertexBuffer m_indicesVBO;
-    imp::VertexBuffer m_attributesVBO;
+	imp::VertexBuffer m_indicesVBO;
+	imp::VertexBuffer m_attributesVBO;
 
-    imp::VertexArray m_vao;
+	imp::VertexArray m_vao;
 };
 
 #endif // SIMPLE_MESH

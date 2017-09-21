@@ -40,13 +40,13 @@ public:
 	Type getType() const;
 
 	/// Returns shader id.
-	unsigned int getId() const;
+	GLuint getId() const;
 
 
 private:
 
 	// shader id
-	unsigned int m_id;
+	GLuint m_id;
 
 };
 

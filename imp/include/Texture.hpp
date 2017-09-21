@@ -38,7 +38,7 @@ public:
 
 	/// Create texture; if texture was defined earlier
 	/// it will be replaced; texture is left bound
-	void create(Format pf, unsigned short width, unsigned short height, const void *data );
+	void create(Format pf, GLsizei width, GLsizei height, const void *data );
 
 	/// Generate mipmaps
 	void genMipmaps();
@@ -79,14 +79,14 @@ public:
 
 	/// Bind texture and replace specified part of its data
 	/// with different data; texture is automaticly bound
-	void replace( unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height, void* data ) ;
+	void replace(GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei height, void* data ) ;
 
 
 	/// Return texture width
-	unsigned short getWidth() const;
+	GLsizei getWidth() const;
 
 	/// Return texture height
-	unsigned short getHeight() const;
+	GLsizei getHeight() const;
 
 
 	/// Return texture min filter
@@ -110,19 +110,19 @@ public:
 	Format getPixelFormat() const;
 
 	/// Return opengl id of texture
-	unsigned int getId() const;
+	GLuint getId() const;
 
 
 private:
 
 	// opengl id of texture
-	unsigned int m_id;
+	GLuint m_id;
 
 	// texture width in pixels
-	unsigned short m_width;
+	GLsizei m_width;
 
 	// texture height in pixels
-	unsigned short m_height;
+	GLsizei m_height;
 
 	// pixel format
 	Format m_pixelFormat;

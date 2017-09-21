@@ -51,7 +51,7 @@ public:
 
 	/// Create render buffer; if it was defined earlier
 	/// it will be replaced; render buffer is left bound
-	void create(Format format, unsigned short width, unsigned short height );
+	void create(Format format, GLsizei width, GLsizei height );
 
 	/// Clear render buffer content
 	void clear();
@@ -64,25 +64,25 @@ public:
 
 
 	/// Return render buffer width
-	unsigned short getWidth() const;
+	GLsizei getWidth() const;
 
 	/// Return render buffer height
-	unsigned short getHeight() const;
+	GLsizei getHeight() const;
 
 	/// Return opengl id of render buffer
-	unsigned int getId() const;
+	GLuint getId() const;
 
 
 private:
 
 	// opengl id of render buffer
-	unsigned int m_id;
+	GLuint m_id;
 
-	// texture width in pixels
-	unsigned short m_width;
+	// render buffer width in pixels
+	GLsizei m_width;
 
-	// texture height in pixels
-	unsigned short m_height;
+	// render buffer height in pixels
+	GLsizei m_height;
 
 	// render buffer format
 	Format m_format;

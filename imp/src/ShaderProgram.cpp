@@ -299,7 +299,7 @@ int ShaderProgram::getAtachedShaderIds( unsigned int* buff, unsigned int buffSiz
 }
 
 
-unsigned int ShaderProgram::getId() const
+GLuint ShaderProgram::getId() const
 {
 	return m_id;
 }

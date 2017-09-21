@@ -64,69 +64,69 @@ public:
 	void unbind() const;
 
 
-    /// Specify the value of a uniform variable consisting of float
-    /// values; it also alows to specify an array of values of
-    /// specified type; before calling this function program must be bound
+	/// Specify the value of a uniform variable consisting of float
+	/// values; it also alows to specify an array of values of
+	/// specified type; before calling this function program must be bound
 	void setUniform( int uLoc, UniformType type, float* value, int arraySize = 1 );
 
-    /// Specify the value of a uniform variable consisting of int
-    /// values; before calling this function program must be bound
+	/// Specify the value of a uniform variable consisting of int
+	/// values; before calling this function program must be bound
 	void setUniform( int uLoc, UniformType type, int* value, int arraySize = 1 );
 
-    /// Specify the value of a uniform matrix; before
-    /// calling this function program must be bound
+	/// Specify the value of a uniform matrix; before
+	/// calling this function program must be bound
 	void setUniformMatrix( int uLoc, UniformMatrixType type, float* value, int matricesCount = 1, bool transpose = 0 );
 
 
-    /// Return an integer that represents the location of a specific
-    /// uniform variable within a program; returns -1 if name
-    /// does not correspond to an active uniform variable in
-    /// program; before calling this function program must be bound
+	/// Return an integer that represents the location of a specific
+	/// uniform variable within a program; returns -1 if name
+	/// does not correspond to an active uniform variable in
+	/// program; before calling this function program must be bound
 	int getUniformLocation( const char* variableName );
 
-    /// Retrieve uniform variable value(s)
+	/// Retrieve uniform variable value(s)
 	void getUniform( int uLoc, float* buff );
 
-    /// Retrieve uniform variable value(s)
+	/// Retrieve uniform variable value(s)
 	void getUniform( int uLoc, int* buff );
 
-    /// Retrieve information about an active uniform
+	/// Retrieve information about an active uniform
 	void getUniformInfo( int uLoc, char* nameBuff, unsigned int buffSize, int& varSize, unsigned int& varType );
 
 
-    /// Get index of uniform block
-    int getUniformBlockIndex(const char* blockName) const;
+	/// Get index of uniform block
+	int getUniformBlockIndex(const char* blockName) const;
 
-    /// Get size of uniform block
-    /// @param blockIndex Coresponds to value retrieved with
-    /// ShaderProgram::getUniformBlockIndex
-    int getUniformBlockSize(int blockIndex) const;
+	/// Get size of uniform block
+	/// @param blockIndex Coresponds to value retrieved with
+	/// ShaderProgram::getUniformBlockIndex
+	int getUniformBlockSize(int blockIndex) const;
 
-    /// Assign a binding point to an active uniform block defined at specified index
-    /// @param blockIndex Coresponds to value retrieved with
-    /// ShaderProgram::getUniformBlockIndex
-    /// @param bindingPoint Coresponds to value specified with
-    /// UniformBuffer::setBindingPoint
-    void assignBindingPointToUniformBlock(int blockIndex, int bindingPoint);
+	/// Assign a binding point to an active uniform block defined at specified index
+	/// @param blockIndex Coresponds to value retrieved with
+	/// ShaderProgram::getUniformBlockIndex
+	/// @param bindingPoint Coresponds to value specified with
+	/// UniformBuffer::setBindingPoint
+	void assignBindingPointToUniformBlock(int blockIndex, int bindingPoint);
 
 
-    /// Retrieve linking log
+	/// Retrieve linking log
 	void getLinkingLog(std::string& result) const;
 
-    /// Return number of atached shaders
+	/// Return number of atached shaders
 	unsigned int getAtachedShadersCount() const;
 
-    /// Retrieve uid's of atached shaders and returns number of retrieved uid's
+	/// Retrieve uid's of atached shaders and returns number of retrieved uid's
 	int getAtachedShaderIds( unsigned int* buff, unsigned int buffSize ) const;
 
-    /// Return program id
-	unsigned int getId() const;
+	/// Return program id
+	GLuint getId() const;
 
 
 private:
 
 	// program id
-	unsigned int m_id;
+	GLuint m_id;
 
 };
 

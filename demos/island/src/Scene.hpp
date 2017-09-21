@@ -5,49 +5,54 @@
 #include <string>
 #include <glm/matrix.hpp>
 #include "Texture.hpp"
-#include "ShaderProgram.hpp"
 #include "StaticMesh.hpp"
+#include "FrameBuffer.hpp"
+#include "ShaderProgram.hpp"
 
 class Scene
 {
 public:
 
-    /// Constructor
-    Scene(GLsizei windowWidth, GLsizei windowHeight);
+	/// Constructor
+	Scene(GLsizei windowWidth, GLsizei windowHeight);
 
-    /// Load all data
-    void create();
+	/// Load all data
+	void create();
 
-    /// Update all items
-    void update(float tick);
+	/// Update all items
+	void update(float tick);
 
-    /// Render all models
-    void draw();
+	/// Render all models
+	void draw();
 
-    /// Handle kayboard and mouse input
-    void handleInput( /* TODO */ );
-
-private:
-
-    bool createProgram(std::string vs, std::string fs, imp::ShaderProgram& resultProgram);
-
-    void addStaticMesh(imp::MeshData& meshData);
+	/// Handle kayboard and mouse input
+	void handleInput( /* TODO */ );
 
 private:
 
-    const GLsizei m_windowWidth;
-    const GLsizei m_windowHeight;
+	bool createProgram(std::string vs, std::string fs, imp::ShaderProgram& resultProgram);
 
-    float m_rotationAngle;
-    glm::mat4 m_projMatrix;
-    glm::mat4 m_viewMatrix;
+	void addStaticMesh(imp::MeshData& meshData);
 
-    StaticMesh m_fullscreenQuad;
+private:
 
-    std::vector<StaticMesh> m_staticMeshes;
-    imp::Texture m_staticMeshTexture;
+	const GLsizei m_windowWidth;
+	const GLsizei m_windowHeight;
 
-    imp::ShaderProgram m_basicProgram;
+	float m_rotationAngle;
+	glm::mat4 m_projMatrix;
+	glm::mat4 m_viewMatrix;
+
+	StaticMesh m_fullscreenQuad;
+
+	std::vector<StaticMesh> m_staticMeshes;
+	imp::Texture m_staticMeshTexture;
+
+	imp::ShaderProgram m_basicProgram;
+
+	imp::Texture m_colorTexture;
+	imp::RenderBuffer m_depthRenderBuffer;
+	imp::FrameBuffer m_frameBuffer;
 };
 
 #endif // ISLAND_SCENE
