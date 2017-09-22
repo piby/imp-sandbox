@@ -1,6 +1,7 @@
 #ifndef ISLAND_SCENE
 #define ISLAND_SCENE
 
+#include <map>
 #include <vector>
 #include <string>
 #include <glm/matrix.hpp>
@@ -48,7 +49,7 @@ private:
 	std::vector<StaticMesh> m_staticMeshes;
 	imp::Texture m_staticMeshTexture;
 
-	imp::ShaderProgram m_basicProgram;
+	std::map<std::string, imp::ShaderProgram> m_shaderPrograms;
 
 	imp::Texture m_colorTexture;
 	imp::RenderBuffer m_depthRenderBuffer;

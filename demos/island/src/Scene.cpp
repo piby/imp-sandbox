@@ -24,11 +24,14 @@ void Scene::create()
 	std::string dataPath("data/");
 	std::string shaderPath = dataPath + "shaders/";
 
-	createProgram(shaderPath + "basic.vs", shaderPath + "basic.fs", m_basicProgram);
+	createProgram(shaderPath + "basic.vs", shaderPath + "basic.fs", m_shaderPrograms["basic"]);
+	createProgram(shaderPath + "displayFramebuffer.vs", shaderPath + "displayFramebuffer.fs", m_shaderPrograms["displayFramebuffer"]);
 
 	int textureValue = 0;
-	m_basicProgram.bind();
-	m_basicProgram.setUniform(0, ShaderProgram::UniformType::SINGLE_VALUE, &textureValue);
+	m_shaderPrograms["basic"].bind();
+	m_shaderPrograms["basic"].setUniform(0, ShaderProgram::UniformType::SINGLE_VALUE, &textureValue);
+	m_shaderPrograms["displayFramebuffer"].bind();
+	m_shaderPrograms["displayFramebuffer"].setUniform(0, ShaderProgram::UniformType::SINGLE_VALUE, &textureValue);
 
 	MeshData fullscreenQuadData;
 	generateQuad(fullscreenQuadData);
@@ -43,8 +46,8 @@ void Scene::create()
 
 	GLsizei framebufferWidth = 512;
 	GLsizei framebufferHeight = 512;
-	m_colorTexture.create(Texture::Format::RGB_8_8_8, framebufferWidth, framebufferHeight, nullptr);
-	m_depthRenderBuffer.create(RenderBuffer::Format::DEPTH_24, framebufferWidth, framebufferHeight);
+	m_colorTexture.create(Texture::Format::RGBA_8_8_8_8, framebufferWidth, framebufferHeight, nullptr);
+	m_depthRenderBuffer.create(RenderBuffer::Format::DEPTH_32F, framebufferWidth, framebufferHeight);
 	m_frameBuffer.create(framebufferWidth, framebufferHeight);
 	m_frameBuffer.attach(FrameBuffer::Attachment::COLOR_0, m_colorTexture);
 	m_frameBuffer.attach(FrameBuffer::Attachment::DEPTH, m_depthRenderBuffer);
@@ -68,10 +71,10 @@ void Scene::draw()
 	m_viewMatrix = glm::rotate(m_viewMatrix, m_rotationAngle, glm::vec3(0.0f, 0.9f, 0.1f));
 	glm::mat4 mvp = m_projMatrix * m_viewMatrix * modelMatrix;
 
-	int projMatLoc = m_basicProgram.getUniformLocation("mvpMat");
+	int projMatLoc = m_shaderPrograms["basic"].getUniformLocation("mvpMat");
 
-	m_basicProgram.bind();
-	m_basicProgram.setUniformMatrix(projMatLoc, ShaderProgram::UniformMatrixType::MATRIX_4_4, glm::value_ptr(mvp));
+	m_shaderPrograms["basic"].bind();
+	m_shaderPrograms["basic"].setUniformMatrix(projMatLoc, ShaderProgram::UniformMatrixType::MATRIX_4_4, glm::value_ptr(mvp));
 
 	m_frameBuffer.bind();
 	glClearColor(0.1f, 0.0f, 0.0f, 1.0f);
@@ -94,14 +97,16 @@ void Scene::draw()
 	m_viewMatrix = glm::rotate(m_viewMatrix, m_rotationAngle, glm::vec3(0.0f, 0.9f, 0.1f));
 	mvp = m_projMatrix * m_viewMatrix * modelMatrix;
 
-	m_basicProgram.bind();
-	m_basicProgram.setUniformMatrix(projMatLoc, ShaderProgram::UniformMatrixType::MATRIX_4_4, glm::value_ptr(mvp));
+	projMatLoc = m_shaderPrograms["displayFramebuffer"].getUniformLocation("mvpMat");
+	m_shaderPrograms["displayFramebuffer"].bind();
+	m_shaderPrograms["displayFramebuffer"].setUniformMatrix(projMatLoc, ShaderProgram::UniformMatrixType::MATRIX_4_4, glm::value_ptr(mvp));
 
 	glClearColor(0.0f, 0.1f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 	m_colorTexture.bind();
+
 	m_fullscreenQuad.draw();
 
 	// render cune map:
