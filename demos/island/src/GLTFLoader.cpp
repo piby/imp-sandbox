@@ -1,5 +1,5 @@
 #include "GLTFLoader.hpp"
-#include "TextureFlags.hpp"
+#include "SamplerFlags.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION

@@ -26,24 +26,27 @@ INCLUDEPATH += \
 HEADERS += \
  include/BufferFlags.hpp \
  include/CubemapTexture.hpp \
+ include/CubemapTexture.inl \
  include/FrameBuffer.hpp \
  include/Frustum.hpp \
  include/MeshData.hpp \
  include/RenderBuffer.hpp \
+ include/Sampler.hpp \
+ include/Sampler.inl \
  include/Shader.hpp \
  include/ShaderProgram.hpp \
  include/SimpleCamera.inl \
  include/SimpleCamera.hpp \
  include/Texture.hpp \
  include/Texture.inl \
- include/TextureFlags.hpp \
  include/Utils.hpp \
  include/UniformBuffer.hpp \
  include/UniformBuffer.inl \
  include/VertexArray.hpp \
  include/VertexArray.inl \
  include/VertexBuffer.hpp \
- include/VertexBuffer.inl
+ include/VertexBuffer.inl \
+    include/SamplerFlags.hpp
 
 SOURCES += \
  src/CubemapTexture.cpp \

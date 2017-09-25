@@ -1,7 +1,7 @@
 #ifndef IMP_CUBEMAP_TEXTURE_HPP
 #define IMP_CUBEMAP_TEXTURE_HPP
 
-#include "TextureFlags.hpp"
+#include "SamplerFlags.hpp"
 #include <GL/glew.h>
 
 namespace imp
