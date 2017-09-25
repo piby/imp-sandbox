@@ -1,5 +1,5 @@
-#ifndef IMP_TEXTURE_HPP
-#define IMP_TEXTURE_HPP
+#ifndef IMP_CUBEMAP_TEXTURE_HPP
+#define IMP_CUBEMAP_TEXTURE_HPP
 
 #include "TextureFlags.hpp"
 #include <GL/glew.h>
@@ -7,7 +7,7 @@
 namespace imp
 {
 
-class Texture
+class CubemapTexture
 {
 
 public:
@@ -23,22 +23,36 @@ public:
 		RGBA_8_8_8_8,
 		
 		// NOTE: when adding another formats
-		//		 modify also arrays storing 
+		//		 modify also arrays storing
 		//		 glTexImage2D arguments
+	};
+
+	union Data
+	{
+		const void *faces[6];
+		struct
+		{
+			const void *positiveX;
+			const void *negativeX;
+			const void *positiveY;
+			const void *negativeY;
+			const void *positiveZ;
+			const void *negativeZ;
+		} face;
 	};
 
 public:
 
 	/// Constructor
-	Texture();
+	CubemapTexture();
 
 	/// Destructor
-	~Texture();
+	~CubemapTexture();
 
 
-	/// Create texture; if texture was defined earlier
+	/// Create cubemap texture; if texture was defined earlier
 	/// it will be replaced; texture is left bound
-	void create(Format pf, GLsizei width, GLsizei height, const void *data );
+	void create(Format pf, GLsizei width, GLsizei height, const Data& data );
 
 	/// Generate mipmaps
 	void genMipmaps();
@@ -46,28 +60,15 @@ public:
 	/// Set mipmap at given level (level must be greater then 0);
 	/// At level 1 data should point to texels of two times smaller texture;
 	/// Texture must be bound
-	void setMipmap( GLint level, void* data );
-
-	/// Copy specified data from current frame buffer; If texture was defined
-	/// earlier it will be replaced; Texture is left bound
-	void createFromFrameBuffer( Format pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height ) ;
-
+	void setMipmap( GLint level, const Data& data );
 
 	/// Set min and mag filters; min filter is used when pixel color is calculated
 	/// basing on more then one texel, mag filter is used when color is calculated
 	/// basing on one texel; texture must be bound
 	void setFilters( MinFilter minf, MagFilter magf );
 
-	/// Set anisotropic filtering; value should be equal or greater then 1.0 and
-	/// smaler then max anisotropy wchih is usualy 2.0; if wallue will be out of
-	/// this range it will be converted to nearest corect value; function will
-	/// return 0 if this feature is unawelable or if there was an error;
-	/// texture must be bound
-	bool setAnisotropicFilter( float value );
-
-
 	/// Set the wrap parameters for texture coordinates
-	void setWrapMode( WrapMode sCoord, WrapMode tCoord );
+	void setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord );
 
 
 	/// Bind texture
@@ -75,11 +76,6 @@ public:
 
 	/// Unbind texture
 	void unbind() const;
-
-
-	/// Bind texture and replace specified part of its data
-	/// with different data; texture is automaticly bound
-	void replace(GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei height, void* data ) ;
 
 
 	/// Return texture width
@@ -102,7 +98,10 @@ public:
 	/// Get wrap mode for texture t coordinate
 	WrapMode getTWrapMode() const;
 
+	/// Get wrap mode for texture r coordinate
+	WrapMode getRWrapMode() const;
 
+	
 	/// Return texture pixel format
 	Format getPixelFormat() const;
 
@@ -126,8 +125,8 @@ private:
 
 };
 
-#include "Texture.inl"
+#include "CubemapTexture.inl"
 
 }
 
-#endif // IMP_TEXTURE_HPP
+#endif // IMP_CUBEMAP_TEXTURE_HPP

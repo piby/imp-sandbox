@@ -25,6 +25,7 @@ INCLUDEPATH += \
 
 HEADERS += \
  include/BufferFlags.hpp \
+ include/CubemapTexture.hpp \
  include/FrameBuffer.hpp \
  include/Frustum.hpp \
  include/MeshData.hpp \
@@ -45,6 +46,7 @@ HEADERS += \
  include/VertexBuffer.inl
 
 SOURCES += \
+ src/CubemapTexture.cpp \
  src/Utils.cpp \
  src/FrameBuffer.cpp \
  src/Frustum.cpp \

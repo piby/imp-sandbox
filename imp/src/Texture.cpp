@@ -50,8 +50,8 @@ void Texture::create( Format pf, GLsizei width, GLsizei height, const void* data
 		glDeleteTextures( 1, &m_id );
 	glGenTextures( 1, &m_id );
 
-	m_width  = static_cast<uint32_t>(width);
-	m_height = static_cast<uint32_t>(height);
+	m_width  = width;
+	m_height = height;
 	m_pixelFormat = pf;
 
 	glBindTexture( GL_TEXTURE_2D, m_id );
@@ -94,7 +94,7 @@ void Texture::genMipmaps()
 }
 
 
-void Texture::setMipmap( unsigned int level, void* data )
+void Texture::setMipmap( GLint level, void* data )
 {
 #ifdef IMP_DEBUG
 
@@ -124,10 +124,10 @@ void Texture::setMipmap( unsigned int level, void* data )
 
 	TexelFormatData fd = FormatData[m_pixelFormat];
 	glTexImage2D( GL_TEXTURE_2D,
-				  static_cast<GLint>(level),
+				  level,
 				  fd.internalFormat,
-				  static_cast<GLsizei>(w),
-				  static_cast<GLsizei>(h),
+				  w,
+				  h,
 				  0,
 				  fd.format,
 				  fd.type,
@@ -242,7 +242,7 @@ bool Texture::setAnisotropicFilter( float value )
 }
 
 
-void Texture::setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord )
+void Texture::setWrapMode( WrapMode sCoord, WrapMode tCoord )
 {
 
 #ifdef IMP_DEBUG
@@ -257,5 +257,4 @@ void Texture::setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord )
 
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int>(sCoord) );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int>(tCoord) );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, static_cast<int>(rCoord) );
 }
