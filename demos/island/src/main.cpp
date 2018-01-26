@@ -57,7 +57,8 @@ int main(void)
 		return -1;
 
 	Scene scene(windowWidth, windowHeight);
-	scene.create();
+	if (!scene.create())
+		return 0;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))

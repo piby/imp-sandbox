@@ -30,8 +30,7 @@ static const GLenum CubemapTargets[] =
 
 CubemapTexture::CubemapTexture()
 	: m_id(0)
-	, m_width(0)
-	, m_height(0)
+	, m_size{ 0, 0 }
 {
 }
 
@@ -45,23 +44,20 @@ CubemapTexture::~CubemapTexture()
 		glEnable( GL_TEXTURE_CUBE_MAP );
 
 	glDeleteTextures( 1, &m_id );
-
-	m_width = 0;
-	m_height = 0;
+	m_id = 0;
 }
 
 
-void CubemapTexture::create( Format pf, GLsizei width, GLsizei height, const Data& data )
+void CubemapTexture::create( Format pf, const Size& size, const Data& data )
 {
 	if( !glIsEnabled( GL_TEXTURE_CUBE_MAP ) )
 		glEnable( GL_TEXTURE_CUBE_MAP );
 
-	if( ( m_width != width ) || ( m_height != height ) )
+	if( ( m_size.width != size.width ) || ( m_size.height != size.height ) )
 		glDeleteTextures( 1, &m_id );
 	glGenTextures( 1, &m_id );
 
-	m_width  = width;
-	m_height = height;
+	m_size = size;
 	m_pixelFormat = pf;
 
 	glBindTexture( GL_TEXTURE_CUBE_MAP, m_id );
@@ -73,16 +69,14 @@ void CubemapTexture::create( Format pf, GLsizei width, GLsizei height, const Dat
 		glTexImage2D( CubemapTargets[index],
 					  0,
 					  fd.internalFormat,
-					  width,
-					  height,
+					  m_size.width,
+					  m_size.height,
 					  0,
 					  fd.format,
 					  fd.type,
 					  data.faces[index] );
 		assert(glGetError() == GL_NO_ERROR);
 	}
-
-	setFilters( MinFilter::LINEAR, MagFilter::LINEAR );
 }
 
 
@@ -126,8 +120,8 @@ void CubemapTexture::setMipmap( GLint level, const Data& data )
 		!data.face.positiveZ || !data.face.negativeZ )
 		return;
 
-	GLsizei w = m_width >> level;
-	GLsizei h = m_height >> level;
+	GLsizei w = m_size.width >> level;
+	GLsizei h = m_size.height >> level;
 
 	// if both mipmap width and height
 	// are equal 0 then level was to big
@@ -155,41 +149,4 @@ void CubemapTexture::setMipmap( GLint level, const Data& data )
 
 		assert(glGetError() == GL_NO_ERROR);
 	}
-}
-
-
-void CubemapTexture::setFilters( MinFilter minf, MagFilter magf )
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_CUBE_MAP ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, static_cast<int>(minf) );
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, static_cast<int>(magf) );
-}
-
-
-void CubemapTexture::setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord )
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_CUBE_MAP ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, static_cast<int>(sCoord) );
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, static_cast<int>(tCoord) );
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, static_cast<int>(rCoord) );
 }

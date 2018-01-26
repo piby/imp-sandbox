@@ -20,8 +20,7 @@ static std::map<FrameBuffer::Attachment, GLenum> AttachmentData =
 
 FrameBuffer::FrameBuffer()
 	: m_id(0)
-	, m_width(0)
-	, m_height(0)
+	, m_size{0, 0}
 {
 }
 
@@ -35,14 +34,13 @@ FrameBuffer::~FrameBuffer()
 }
 
 
-void FrameBuffer::create( GLsizei width, GLsizei height )
+void FrameBuffer::create( const Size& size )
 {
 	if( m_id )
 		glDeleteFramebuffers( 1, &m_id );
 	glGenFramebuffers( 1, &m_id );
 
-	m_width = static_cast<uint16_t>(width);
-	m_height = static_cast<uint16_t>(height);
+	m_size = size;
 	glBindFramebuffer( GL_FRAMEBUFFER, m_id );
 }
 
@@ -55,10 +53,11 @@ void FrameBuffer::attach( FrameBuffer::Attachment attachment, const Texture& tex
 	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
 	assert( boundFBId == m_id );
 
-#endif
-
+	auto size = texture.getSize();
 	assert( m_id );
 	assert( ( texture.getWidth() == m_width) && ( texture.getHeight() == m_height ) );
+
+#endif
 
 	glFramebufferTexture2D( GL_FRAMEBUFFER, AttachmentData[attachment], GL_TEXTURE_2D, texture.getId(), 0 );
 }
@@ -75,7 +74,7 @@ void FrameBuffer::attach( FrameBuffer::Attachment attachment, const RenderBuffer
 #endif
 
 	assert( m_id );
-	assert( ( renderBuffer.getWidth() == m_width) && ( renderBuffer.getHeight() == m_height ) );
+	assert( ( renderBuffer.getSize().width == m_size.width) && ( renderBuffer.getSize().height == m_size.height ) );
 
 	glFramebufferRenderbuffer( GL_FRAMEBUFFER, AttachmentData[attachment], GL_RENDERBUFFER, renderBuffer.getId() );
 }
@@ -84,7 +83,7 @@ void FrameBuffer::attach( FrameBuffer::Attachment attachment, const RenderBuffer
 void FrameBuffer::bind()
 {
 	glBindFramebuffer( GL_FRAMEBUFFER, m_id );
-	glViewport( 0, 0, m_width, m_height );
+	glViewport( 0, 0, m_size.width, m_size.height );
 
 	assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
 }
@@ -96,15 +95,9 @@ void FrameBuffer::unbind()
 }
 
 
-GLsizei FrameBuffer::getWidth()
+const Size& FrameBuffer::getSize()
 {
-	return m_width;
-}
-
-
-GLsizei FrameBuffer::getHeight()
-{
-	return m_height;
+	return m_size;
 }
 
 

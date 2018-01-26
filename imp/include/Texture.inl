@@ -4,7 +4,7 @@
 inline void Texture::bind() const
 {
 	assert( glIsEnabled( GL_TEXTURE_2D ) );
-	assert( ( m_width > 0 ) && ( m_height > 0 ) );
+	assert( ( m_size.width > 0 ) && ( m_size.height > 0 ) );
 
 	glBindTexture( GL_TEXTURE_2D, m_id );
 }
@@ -16,91 +16,9 @@ inline void Texture::unbind() const
 }
 
 
-inline GLsizei Texture::getWidth() const
+inline const Size& Texture::getSize() const
 {
-	return m_width;
-}
-
-
-inline GLsizei Texture::getHeight() const
-{
-	return m_height;
-}
-
-
-inline MinFilter Texture::getMinFilter() const
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	int minFilter = 0;
-	glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &minFilter );
-	return ( MinFilter ) minFilter;
-}
-
-
-inline MagFilter Texture::getMagFilter() const
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	int magFilter = 0;
-	glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, &magFilter );
-	return ( MagFilter ) magFilter;
-}
-
-
-inline WrapMode Texture::getSWrapMode() const
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	int mode = 0;
-	glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &mode );
-	return ( WrapMode ) mode;
-}
-
-
-inline WrapMode Texture::getTWrapMode() const
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	int mode = 0;
-	glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &mode );
-	return ( WrapMode ) mode;
+	return m_size;
 }
 
 

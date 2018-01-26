@@ -2,6 +2,7 @@
 #define IMP_RENDER_BUFFER_HPP
 
 #include <GL/glew.h>
+#include "Utils.hpp"
 
 namespace imp
 {
@@ -51,7 +52,7 @@ public:
 
 	/// Create render buffer; if it was defined earlier
 	/// it will be replaced; render buffer is left bound
-	void create(Format format, GLsizei width, GLsizei height );
+	void create(Format format, const Size& size );
 
 	/// Clear render buffer content
 	void clear();
@@ -63,11 +64,8 @@ public:
 	void unbind() const;
 
 
-	/// Return render buffer width
-	GLsizei getWidth() const;
-
-	/// Return render buffer height
-	GLsizei getHeight() const;
+	/// Return render buffer width and height
+	const Size& getSize() const;
 
 	/// Return opengl id of render buffer
 	GLuint getId() const;
@@ -78,11 +76,8 @@ private:
 	// opengl id of render buffer
 	GLuint m_id;
 
-	// render buffer width in pixels
-	GLsizei m_width;
-
-	// render buffer height in pixels
-	GLsizei m_height;
+	// render buffer width and height in pixels
+	Size m_size;
 
 	// render buffer format
 	Format m_format;

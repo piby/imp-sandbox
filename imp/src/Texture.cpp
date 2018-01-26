@@ -20,8 +20,7 @@ static std::map<Texture::Format, TexelFormatData> FormatData =
 
 Texture::Texture()
 	: m_id(0)
-	, m_width(0)
-	, m_height(0)
+	, m_size{ 0, 0 }
 {
 }
 
@@ -35,23 +34,20 @@ Texture::~Texture()
 		glEnable( GL_TEXTURE_2D );
 
 	glDeleteTextures( 1, &m_id );
-
-	m_width = 0;
-	m_height = 0;
+	m_id = 0;
 }
 
 
-void Texture::create( Format pf, GLsizei width, GLsizei height, const void* data )
+void Texture::create( Format pf, const Size& size, const void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
 
-	if( ( m_width != width ) || ( m_height != height ) )
+	if( ( m_size.width != size.width ) || ( m_size.height != size.height ) )
 		glDeleteTextures( 1, &m_id );
 	glGenTextures( 1, &m_id );
 
-	m_width  = width;
-	m_height = height;
+	m_size = size;
 	m_pixelFormat = pf;
 
 	glBindTexture( GL_TEXTURE_2D, m_id );
@@ -60,15 +56,14 @@ void Texture::create( Format pf, GLsizei width, GLsizei height, const void* data
 	glTexImage2D( GL_TEXTURE_2D,
 				  0,
 				  fd.internalFormat,
-				  width,
-				  height,
+				  m_size.width,
+				  m_size.height,
 				  0,
 				  fd.format,
 				  fd.type,
 				  data );
 
 	assert(glGetError() == GL_NO_ERROR);
-	setFilters( MinFilter::LINEAR, MagFilter::LINEAR );
 }
 
 
@@ -109,8 +104,8 @@ void Texture::setMipmap( GLint level, void* data )
 	if( !data || !m_id || !level )
 		return;
 
-	uint32_t w = m_width >> level;
-	uint32_t h = m_height >> level;
+	GLsizei w = m_size.width >> level;
+	GLsizei h = m_size.height >> level;
 
 	// if both mipmap width and height
 	// are equal 0 then level was to big
@@ -137,19 +132,18 @@ void Texture::setMipmap( GLint level, void* data )
 }
 
 
-void Texture::createFromFrameBuffer( Format pf, unsigned short llxCorner, unsigned short llyCorner, unsigned short width, unsigned short height )
+void Texture::createFromFrameBuffer( Format pf, const Rectangle& screenRectangle )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
 
 	// reuse identifier or generate new one
-	if( ( m_width > 0 ) || ( m_height > 0 ) )
+	if( ( m_size.width > 0 ) || ( m_size.height > 0 ) )
 		glDeleteTextures( 1, &m_id );
 	else
 		glGenTextures( 1, &m_id );
 
-	m_width  = width;
-	m_height = height;
+	m_size = { screenRectangle.width, screenRectangle.height };
 	m_pixelFormat = pf;
 
 	assert(glGetError() == GL_NO_ERROR);
@@ -159,17 +153,17 @@ void Texture::createFromFrameBuffer( Format pf, unsigned short llxCorner, unsign
 	glCopyTexImage2D( GL_TEXTURE_2D,
 					  0,
 					  fd.internalFormat,
-					  llxCorner,
-					  llyCorner,
-					  width,
-					  height,
+					  screenRectangle.llxCorner,
+					  screenRectangle.llyCorner,
+					  screenRectangle.width,
+					  screenRectangle.height,
 					  0 );
 	
 	assert(glGetError() == GL_NO_ERROR);
 }
 
 
-void Texture::replace( GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei height, void* data )
+void Texture::replace( const Rectangle& screenRectangle, void* data )
 {
 	if( !glIsEnabled( GL_TEXTURE_2D ) )
 		glEnable( GL_TEXTURE_2D );
@@ -178,10 +172,10 @@ void Texture::replace( GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei 
 	glBindTexture( GL_TEXTURE_2D, m_id );
 	glTexSubImage2D( GL_TEXTURE_2D,
 					 0,
-					 llxCorner,
-					 llyCorner,
-					 width,
-					 height,
+					 screenRectangle.llxCorner,
+					 screenRectangle.llyCorner,
+					 screenRectangle.width,
+					 screenRectangle.height,
 					 fd.format,
 					 fd.type,
 					 data );
@@ -189,24 +183,6 @@ void Texture::replace( GLint llxCorner, GLint llyCorner, GLsizei width, GLsizei 
 	// NOTE: mip maps aren't generated
 
 	assert(glGetError() == GL_NO_ERROR);
-}
-
-
-void Texture::setFilters( MinFilter minf, MagFilter magf )
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int>(minf) );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int>(magf) );
 }
 
 
@@ -239,22 +215,4 @@ bool Texture::setAnisotropicFilter( float value )
 		return 0;
 */
 	return 1;
-}
-
-
-void Texture::setWrapMode( WrapMode sCoord, WrapMode tCoord )
-{
-
-#ifdef IMP_DEBUG
-
-	assert( glIsEnabled( GL_TEXTURE_2D ) );
-
-	int boundTexId;
-	glGetIntegerv( GL_TEXTURE_BINDING_2D, &boundTexId );
-	assert( boundTexId == m_id );
-
-#endif
-
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int>(sCoord) );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int>(tCoord) );
 }

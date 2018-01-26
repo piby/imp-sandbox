@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <glm/matrix.hpp>
+#include "Sampler.hpp"
 #include "Texture.hpp"
 #include "StaticMesh.hpp"
 #include "FrameBuffer.hpp"
@@ -18,7 +19,7 @@ public:
 	Scene(GLsizei windowWidth, GLsizei windowHeight);
 
 	/// Load all data
-	void create();
+	bool create();
 
 	/// Update all items
 	void update(float tick);
@@ -51,6 +52,7 @@ private:
 
 	std::map<std::string, imp::ShaderProgram> m_shaderPrograms;
 
+	imp::Sampler m_sampler;
 	imp::Texture m_colorTexture;
 	imp::RenderBuffer m_depthRenderBuffer;
 	imp::FrameBuffer m_frameBuffer;

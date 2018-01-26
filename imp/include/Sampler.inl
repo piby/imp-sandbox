@@ -1,18 +1,18 @@
 
 
-Sampler::Sampler()
+inline Sampler::Sampler()
 	: m_id(0)
 {
 }
 
-Sampler::~Sampler()
+inline Sampler::~Sampler()
 {
 	if( m_id )
 		glDeleteSamplers( 1, &m_id );
 }
 
 
-void Sampler::create( const Data& data )
+inline void Sampler::create( const Data& data )
 {
 	glGenSamplers( 1, &m_id );
 	glSamplerParameteri( m_id, GL_TEXTURE_MIN_FILTER, static_cast<int>(data.minf) );
@@ -30,7 +30,7 @@ inline void Sampler::bind(GLuint unit) const
 }
 
 
-void Sampler::unbind() const
+inline void Sampler::unbind() const
 {
 	glBindSampler( 0, 0 );
 }
@@ -40,7 +40,7 @@ inline MinFilter Sampler::getMinFilter() const
 {
 	int minFilter = 0;
 	glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &minFilter );
-	return static_cast<MagFilter>( minFilter );
+	return static_cast<MinFilter>( minFilter );
 }
 
 

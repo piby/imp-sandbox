@@ -2,6 +2,7 @@
 #define IMP_CUBEMAP_TEXTURE_HPP
 
 #include "SamplerFlags.hpp"
+#include "Utils.hpp"
 #include <GL/glew.h>
 
 namespace imp
@@ -52,7 +53,7 @@ public:
 
 	/// Create cubemap texture; if texture was defined earlier
 	/// it will be replaced; texture is left bound
-	void create(Format pf, GLsizei width, GLsizei height, const Data& data );
+	void create(Format pf, const Size& size, const Data& data );
 
 	/// Generate mipmaps
 	void genMipmaps();
@@ -62,14 +63,6 @@ public:
 	/// Texture must be bound
 	void setMipmap( GLint level, const Data& data );
 
-	/// Set min and mag filters; min filter is used when pixel color is calculated
-	/// basing on more then one texel, mag filter is used when color is calculated
-	/// basing on one texel; texture must be bound
-	void setFilters( MinFilter minf, MagFilter magf );
-
-	/// Set the wrap parameters for texture coordinates
-	void setWrapMode( WrapMode sCoord, WrapMode tCoord, WrapMode rCoord );
-
 
 	/// Bind texture
 	void bind() const;
@@ -78,30 +71,10 @@ public:
 	void unbind() const;
 
 
-	/// Return texture width
-	GLsizei getWidth() const;
-
-	/// Return texture height
-	GLsizei getHeight() const;
+	/// Return texture width and height
+	const Size& getSize() const;
 
 
-	/// Return texture min filter
-	MinFilter getMinFilter() const;
-
-	/// Return texture mag filter
-	MagFilter getMagFilter() const;
-
-
-	/// Get wrap mode for texture s coordinate
-	WrapMode getSWrapMode() const;
-
-	/// Get wrap mode for texture t coordinate
-	WrapMode getTWrapMode() const;
-
-	/// Get wrap mode for texture r coordinate
-	WrapMode getRWrapMode() const;
-
-	
 	/// Return texture pixel format
 	Format getPixelFormat() const;
 
@@ -114,11 +87,8 @@ private:
 	// opengl id of texture
 	GLuint m_id;
 
-	// texture width in pixels
-	GLsizei m_width;
-
-	// texture height in pixels
-	GLsizei m_height;
+	// texture width and height in pixels
+	Size m_size;
 
 	// pixel format
 	Format m_pixelFormat;

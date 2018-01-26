@@ -1,5 +1,5 @@
-#ifndef IMP_TEXTURE_FLAGS_HPP
-#define IMP_TEXTURE_FLAGS_HPP
+#ifndef IMP_SAMPLER_FLAGS_HPP
+#define IMP_SAMPLER_FLAGS_HPP
 
 #include <GL/glew.h>
 
@@ -50,4 +50,4 @@ enum class WrapMode
 
 }
 
-#endif // IMP_TEXTURE_FLAGS_HPP
+#endif // IMP_SAMPLER_FLAGS_HPP

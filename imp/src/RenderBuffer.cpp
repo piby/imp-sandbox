@@ -28,8 +28,7 @@ static std::map<RenderBuffer::Format, BufferFormatData> FormatData =
 
 RenderBuffer::RenderBuffer()
 	: m_id(0)
-	, m_width(0)
-	, m_height(0)
+	, m_size{0 , 0}
 	, m_format(Format::RGB_8_8_8)
 {
 }
@@ -44,18 +43,17 @@ RenderBuffer::~RenderBuffer()
 }
 
 
-void RenderBuffer::create( Format format, GLsizei width, GLsizei height )
+void RenderBuffer::create( Format format, const Size& size )
 {
 	m_format = format;
-	m_width = width;
-	m_height = height;
+	m_size = size;
 
 	if( m_id )
 		glDeleteRenderbuffers( 1, &m_id );
 	glGenRenderbuffers( 1, &m_id );
 
 	glBindRenderbuffer( GL_RENDERBUFFER, m_id );
-	glRenderbufferStorage( GL_RENDERBUFFER, FormatData[m_format].format, width, height );
+	glRenderbufferStorage( GL_RENDERBUFFER, FormatData[m_format].format, m_size.width, m_size.height );
 
 	assert(glGetError() == GL_NO_ERROR);
 }
@@ -84,15 +82,9 @@ void RenderBuffer::unbind() const
 }
 
 
-GLsizei RenderBuffer::getWidth() const
+const Size& RenderBuffer::getSize() const
 {
-	return m_width;
-}
-
-
-GLsizei RenderBuffer::getHeight() const
-{
-	return m_height;
+	return m_size;
 }
 
 

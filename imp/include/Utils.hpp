@@ -7,6 +7,20 @@
 namespace imp
 {
 
+struct Size
+{
+	GLsizei width;
+	GLsizei height;
+};
+
+struct Rectangle
+{
+	unsigned short llxCorner;
+	unsigned short llyCorner;
+	GLsizei width;
+	GLsizei height;
+};
+
 void generateQuad(MeshData& result);
 
 std::string loadShader(const std::string& fileName);

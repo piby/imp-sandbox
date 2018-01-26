@@ -13,3 +13,4 @@ void main()
 	gl_Position = mvpMat * vec4(i_vertex, 1.0);
 	o_coord = vec2(i_coord.x, i_coord.y);
 }
+
