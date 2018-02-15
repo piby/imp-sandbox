@@ -77,9 +77,6 @@ public:
 	/// Return texture width and height
 	const Size& getSize() const;
 
-	/// Return texture height
-	GLsizei getHeight() const;
-
 
 	/// Return texture pixel format
 	Format getPixelFormat() const;

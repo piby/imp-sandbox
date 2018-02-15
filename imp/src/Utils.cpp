@@ -52,18 +52,19 @@ std::string imp::loadShader(const std::string& fileName)
 		return std::string();
 	}
 
-	shaderFile.seekg (0, shaderFile.end);
+	shaderFile.seekg (0, std::ios::end);
 	long size = shaderFile.tellg();
-	shaderFile.seekg (0, shaderFile.beg);
+	shaderFile.seekg (0, std::ios::beg);
 	if (!size)
 	{
 		shaderFile.close();
 		return std::string();
 	}
 
-	std::vector<GLchar> buffer(static_cast<unsigned long>(size));
-	shaderFile.read(&buffer[0], size);
+	std::string buffer;
+	buffer.reserve(static_cast<unsigned long>(size));
+	buffer.assign(std::istreambuf_iterator<char>(shaderFile),
+				  std::istreambuf_iterator<char>());
 	shaderFile.close();
-
-	return &buffer[0];
+	return buffer;
 }

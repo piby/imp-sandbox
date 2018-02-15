@@ -53,13 +53,14 @@ void FrameBuffer::attach( FrameBuffer::Attachment attachment, const Texture& tex
 	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
 	assert( boundFBId == m_id );
 
-	auto size = texture.getSize();
-	assert( m_id );
-	assert( ( texture.getWidth() == m_width) && ( texture.getHeight() == m_height ) );
-
 #endif
 
+	assert( m_id );
+	assert( ( texture.getSize().width == m_size.width) && ( texture.getSize().height == m_size.height ) );
+
 	glFramebufferTexture2D( GL_FRAMEBUFFER, AttachmentData[attachment], GL_TEXTURE_2D, texture.getId(), 0 );
+
+	assert( glGetError() == GL_NO_ERROR);
 }
 
 
@@ -77,6 +78,46 @@ void FrameBuffer::attach( FrameBuffer::Attachment attachment, const RenderBuffer
 	assert( ( renderBuffer.getSize().width == m_size.width) && ( renderBuffer.getSize().height == m_size.height ) );
 
 	glFramebufferRenderbuffer( GL_FRAMEBUFFER, AttachmentData[attachment], GL_RENDERBUFFER, renderBuffer.getId() );
+
+	assert( glGetError() == GL_NO_ERROR);
+}
+
+
+void FrameBuffer::attach( FrameBuffer::Attachment attachment, const MultiSampleTexture& texture )
+{
+#ifdef IMP_DEBUG
+
+	int boundFBId;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
+	assert( boundFBId == m_id );
+
+#endif
+
+	assert( m_id );
+	assert( ( texture.getSize().width == m_size.width) && ( texture.getSize().height == m_size.height ) );
+
+	glFramebufferTexture2D( GL_FRAMEBUFFER, AttachmentData[attachment], GL_TEXTURE_2D_MULTISAMPLE, texture.getId(), 0 );
+
+	assert( glGetError() == GL_NO_ERROR);
+}
+
+
+void FrameBuffer::attach( FrameBuffer::Attachment attachment, const MultiSampleRenderBuffer& renderBuffer )
+{
+#ifdef IMP_DEBUG
+
+	int boundFBId;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFBId );
+	assert( boundFBId == m_id );
+
+#endif
+
+	assert( m_id );
+	assert( ( renderBuffer.getSize().width == m_size.width) && ( renderBuffer.getSize().height == m_size.height ) );
+
+	glFramebufferRenderbuffer( GL_FRAMEBUFFER, AttachmentData[attachment], GL_RENDERBUFFER, renderBuffer.getId() );
+
+	assert( glGetError() == GL_NO_ERROR);
 }
 
 

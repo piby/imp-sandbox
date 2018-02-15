@@ -54,8 +54,10 @@ void CubemapTexture::create( Format pf, const Size& size, const Data& data )
 		glEnable( GL_TEXTURE_CUBE_MAP );
 
 	if( ( m_size.width != size.width ) || ( m_size.height != size.height ) )
+	{
 		glDeleteTextures( 1, &m_id );
-	glGenTextures( 1, &m_id );
+		glGenTextures( 1, &m_id );
+	}
 
 	m_size = size;
 	m_pixelFormat = pf;

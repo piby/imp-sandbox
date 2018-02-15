@@ -30,6 +30,9 @@ HEADERS += \
  include/FrameBuffer.hpp \
  include/Frustum.hpp \
  include/MeshData.hpp \
+ include/MultiSampleTexture.hpp \
+ include/MultiSampleTexture.inl \
+ include/MultiSampleRenderBuffer.hpp \
  include/RenderBuffer.hpp \
  include/Sampler.hpp \
  include/Sampler.inl \
@@ -53,6 +56,8 @@ SOURCES += \
  src/Utils.cpp \
  src/FrameBuffer.cpp \
  src/Frustum.cpp \
+ src/MultiSampleTexture.cpp \
+ src/MultiSampleRenderBuffer.cpp \
  src/Texture.cpp \
  src/Shader.cpp \
  src/ShaderProgram.cpp \

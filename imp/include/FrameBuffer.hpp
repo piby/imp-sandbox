@@ -2,7 +2,9 @@
 #define IMP_FRAME_BUFFER_HPP
 
 #include "Texture.hpp"
+#include "MultiSampleTexture.hpp"
 #include "RenderBuffer.hpp"
+#include "MultiSampleRenderBuffer.hpp"
 
 namespace imp
 {
@@ -41,8 +43,13 @@ public:
 	void attach( Attachment attachment, const Texture& texture );
 
 	/// Attach render buffer
-	void attach( Attachment attachment, const RenderBuffer& texture );
+	void attach( Attachment attachment, const RenderBuffer& renderBuffer );
 
+	/// Attach multisample texture
+	void attach( Attachment attachment, const MultiSampleTexture& texture );
+
+	/// Attach multisample render buffer
+	void attach( Attachment attachment, const MultiSampleRenderBuffer& renderBuffer );
 
 	/// Bind frame buffer
 	void bind();

@@ -30,9 +30,6 @@ Texture::~Texture()
 	if( !m_id )
 		return;
 
-	if( !glIsEnabled( GL_TEXTURE_2D ) )
-		glEnable( GL_TEXTURE_2D );
-
 	glDeleteTextures( 1, &m_id );
 	m_id = 0;
 }
@@ -40,12 +37,11 @@ Texture::~Texture()
 
 void Texture::create( Format pf, const Size& size, const void* data )
 {
-	if( !glIsEnabled( GL_TEXTURE_2D ) )
-		glEnable( GL_TEXTURE_2D );
-
 	if( ( m_size.width != size.width ) || ( m_size.height != size.height ) )
+	{
 		glDeleteTextures( 1, &m_id );
-	glGenTextures( 1, &m_id );
+		glGenTextures( 1, &m_id );
+	}
 
 	m_size = size;
 	m_pixelFormat = pf;

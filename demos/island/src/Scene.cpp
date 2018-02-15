@@ -61,13 +61,14 @@ bool Scene::create()
 	m_frameBuffer.unbind();
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 	return true;
 }
 
 
 void Scene::update(float tick)
 {
-	m_rotationAngle += tick;
+	m_rotationAngle += tick / 2.0f;
 }
 
 
@@ -99,12 +100,11 @@ void Scene::draw()
 
 	m_frameBuffer.unbind();
 
-
 	float width = static_cast<float>(m_windowWidth);
 	float height = static_cast<float>(m_windowHeight);
 	m_projMatrix = glm::perspectiveFov(45.0f, width, height, 0.1f, 300.0f);
-	m_viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -5.0f));
-	m_viewMatrix = glm::rotate(m_viewMatrix, m_rotationAngle, glm::vec3(0.0f, 0.9f, 0.1f));
+	m_viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -3.0f));
+	m_viewMatrix = glm::rotate(m_viewMatrix, m_rotationAngle / 2.0f, glm::vec3(0.0f, 0.9f, 0.1f));
 	mvp = m_projMatrix * m_viewMatrix * modelMatrix;
 
 	projMatLoc = m_shaderPrograms["displayFramebuffer"].getUniformLocation("mvpMat");
@@ -137,7 +137,7 @@ bool Scene::createProgram(std::string vs, std::string fs, imp::ShaderProgram& re
 	{
 		std::string log;
 		vertShader.getCompilationLog(log);
-		std::cout << log;
+		std::cout << vs << "\n" << vertSource << "\n" << log;
 		return false;
 	}
 
@@ -145,8 +145,8 @@ bool Scene::createProgram(std::string vs, std::string fs, imp::ShaderProgram& re
 	if(fragShader.create(imp::Shader::Type::FRAGMENT_SHADER, fragSource) < 0)
 	{
 		std::string log;
-		vertShader.getCompilationLog(log);
-		std::cout << log;
+		fragShader.getCompilationLog(log);
+		std::cout << fs << "\n" << fragSource << "\n" << log;
 		return false;
 	}
 
@@ -157,7 +157,7 @@ bool Scene::createProgram(std::string vs, std::string fs, imp::ShaderProgram& re
 	{
 		std::string log;
 		resultProgram.getLinkingLog(log);
-		std::cout << log;
+		std::cout << vs << "\n" << vertSource << "\n" << fs << "\n" << fragSource << "\n" << log;
 		return false;
 	}
 

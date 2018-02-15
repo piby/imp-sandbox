@@ -6,7 +6,6 @@
 #include <string>
 #include <glm/matrix.hpp>
 #include "Sampler.hpp"
-#include "Texture.hpp"
 #include "StaticMesh.hpp"
 #include "FrameBuffer.hpp"
 #include "ShaderProgram.hpp"
