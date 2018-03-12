@@ -38,7 +38,8 @@ private:
 	const GLsizei m_windowWidth;
 	const GLsizei m_windowHeight;
 
-	float m_rotationAngle;
+	float m_orbitAngle;
+	float m_localAngle;
 	glm::mat4 m_projMatrix;
 	glm::mat4 m_viewMatrix;
 
